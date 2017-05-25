@@ -1,0 +1,18 @@
+### Build
+target/
+out/
+pom.xml.versionsBackup
+
+### JetBrains
+.idea/
+*.iml
+
+### Python template
+__pycache__/
+*.py[cod]
+python/.eggs
+python/build
+python/client_sdk.egg-info
+python/dist
+python/sdk.egg-info
+.cache
