@@ -128,11 +128,11 @@ Feel free to go to Requests tab and ask for additional cars or any other questio
 #### 3. For Admins
 
      a) Admin will create a car with time slots on Autox web portal
-![AddDevice.PNG](docs/2364711376-AddDevice.PNG)
+![AddDevice.PNG](docs/2364711376-AddDevice.png)
 
      b) A outside user should login to Autox web portal to generate api-key/api-secret and reserve an available car.
-![ApiGenerate.PNG](docs/217926279-ApiGenerate.PNG)
+![ApiGenerate.PNG](docs/217926279-ApiGenerate.png)
 
-![ReserveCar.PNG](docs/3034823481-ReserveCar.PNG)
+![ReserveCar.PNG](docs/3034823481-ReserveCar.png)
   
     c) Copy the generated api-key/api-secret and use this key to authenticate when connect to VTCloud.
