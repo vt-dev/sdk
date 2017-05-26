@@ -14,8 +14,8 @@ public class Basic {
     final API api = API.get();
 
     // use test api key and secret
-    final String key = "700fb92b-1505-4a39-9b08-927cbe0257d6";
-    final String secret = "47ac4af9-ed2a-4ed0-8d59-d431162a3032";
+    final String key = "0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c";
+    final String secret = "1bcdd94c-a7ed-4e24-b601-6e8753ca3721";
 
     // authenticate
     final Token token = api.authenticate(key, secret);

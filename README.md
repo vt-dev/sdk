@@ -14,14 +14,15 @@ send CAN message and show us IDs of all responses.
 We will need to connect to VT cloud. API key and secret are required for this.
 Let's use test ones (they allow to connect to test device only, which is always available).
 
-Key: 700fb92b-1505-4a39-9b08-927cbe0257d6
-Secret: 47ac4af9-ed2a-4ed0-8d59-d431162a3032        
+Key: 0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c
+
+Secret: 1bcdd94c-a7ed-4e24-b601-6e8753ca3721
 
 Python version:
 ```python
 # use test api key and secret
-key = "700fb92b-1505-4a39-9b08-927cbe0257d6"
-secret = "47ac4af9-ed2a-4ed0-8d59-d431162a3032"
+key = "0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c"
+secret = "1bcdd94c-a7ed-4e24-b601-6e8753ca3721"
 # create api connection
 api = API()
 # get authentication token
@@ -63,8 +64,8 @@ Java version:
 final API api = API.get();
 
 // use test api key and secret
-final String key = "700fb92b-1505-4a39-9b08-927cbe0257d6";
-final String secret = "47ac4af9-ed2a-4ed0-8d59-d431162a3032";
+final String key = "0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c";
+final String secret = "1bcdd94c-a7ed-4e24-b601-6e8753ca3721";
 
 // authenticate
 final Token token = api.authenticate(key, secret);
@@ -127,12 +128,12 @@ Feel free to go to Requests tab and ask for additional cars or any other questio
    
 #### 3. For Admins
 
-     a) Admin will create a car with time slots on Autox web portal
+1. Admin will create a car with time slots on Autox web portal
 ![AddDevice.PNG](docs/2364711376-AddDevice.png)
 
-     b) A outside user should login to Autox web portal to generate api-key/api-secret and reserve an available car.
+2. A outside user should login to Autox web portal to generate api-key/api-secret and reserve an available car.
 ![ApiGenerate.PNG](docs/217926279-ApiGenerate.png)
 
 ![ReserveCar.PNG](docs/3034823481-ReserveCar.png)
   
-    c) Copy the generated api-key/api-secret and use this key to authenticate when connect to VTCloud.
+3. Copy the generated api-key/api-secret and use this key to authenticate when connect to VTCloud.

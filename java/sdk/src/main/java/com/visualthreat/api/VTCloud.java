@@ -13,7 +13,7 @@ import java.util.Iterator;
  * Work with connected CAN bus device.
  * Able to send and receive CAN frames.
  */
-public interface VTCloud {
+public interface VTCloud extends AutoCloseable {
   /**
    * Sends CAN frames with CAN filter on responses.
    *
@@ -45,5 +45,6 @@ public interface VTCloud {
   /**
    * Closes the connection and cleanup resources.
    */
+  @Override
   void close();
 }

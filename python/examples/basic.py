@@ -6,8 +6,8 @@ from sdk.data.Request import Request
 
 if __name__ == "__main__":
     # use test api key and secret
-    key = "700fb92b-1505-4a39-9b08-927cbe0257d6"
-    secret = "47ac4af9-ed2a-4ed0-8d59-d431162a3032"
+    key = "0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c"
+    secret = "1bcdd94c-a7ed-4e24-b601-6e8753ca3721"
     # create api connection
     api = API()
     # get authentication token

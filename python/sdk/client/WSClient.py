@@ -1,3 +1,4 @@
+from _ssl import CERT_REQUIRED
 from queue import Queue
 
 from ws4py.client.threadedclient import WebSocketClient
@@ -8,14 +9,15 @@ class WSClient(WebSocketClient):
 
     def __init__(self, url, headers, reading_queue, cert_path):
         """
-        :param str url: 
-        :param list of tuple headers: 
-        :param Queue reading_queue: 
+        :param str url:
+        :param list of tuple headers:
+        :param Queue reading_queue:
         """
         self.__reading_queue = reading_queue
-        ssl_options = {'cert_reqs': 2}
+        ssl_options = {}
         if cert_path:
             ssl_options['ca_certs'] = cert_path
+            ssl_options = {'cert_reqs': CERT_REQUIRED}
         WebSocketClient.__init__(self, url=url, headers=headers, heartbeat_freq=15, ssl_options=ssl_options)
 
     def opened(self):
