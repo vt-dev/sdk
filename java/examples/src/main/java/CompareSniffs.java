@@ -80,9 +80,11 @@ public class CompareSniffs {
 
   private static Set<String> collectSniffIDs(final VTCloud cloud) {
     final Set<String> uniqueIDs = new HashSet<>();
-    final Iterator<CANFrame> frames1 = cloud.sniff(SNIFF_LENGTH, CANResponseFilter.NONE);
-    while (frames1.hasNext()) {
-      uniqueIDs.add("0x" + Integer.toHexString(frames1.next().getId()));
+    final Iterator<CANFrame> frames = cloud.sniff(SNIFF_LENGTH, CANResponseFilter.NONE);
+    while (frames.hasNext()) {
+      final CANFrame frame = frames.next();
+      logResponseFrame(frame);
+      uniqueIDs.add("0x" + Integer.toHexString(frame.getId()));
     }
     return uniqueIDs;
   }
@@ -95,5 +97,13 @@ public class CompareSniffs {
       }
     }
     return result;
+  }
+
+  private static void logRequestFrame(final CANFrame frame) {
+    log.info("===>{}", frame);
+  }
+
+  private static void logResponseFrame(final CANFrame frame) {
+    log.info("<==={}", frame);
   }
 }

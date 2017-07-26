@@ -19,11 +19,12 @@ public final class Fuzzing {
   private static final Options options = new Options();
   private static final Random rnd = new SecureRandom();
   private static final List<CANFrame> frames = new LinkedList<>();
-  private static final long WAIT_TIME = 100;
-  // Amount of requests to send
-  private static final int maxCount = 1000;
-  private static VTCloud cloud = null;
+  private static final long WAIT_TIME = 30;
+  // Number of fuzz iterations
+  private static final int ITER_COUNT = 10;
   private static int count = 0;
+
+  private static VTCloud cloud;
 
   static {
     options.addOption(Arguments.DEVICE.type, "device", true, "Device ID");
@@ -75,14 +76,16 @@ public final class Fuzzing {
     log.info("Iteration # " + count);
     try {
       // Send requests to device and wait for a response
-      final Collection<Request> requests = IntStream.range(0, 100)
+      final Collection<Request> requests = IntStream.range(0, 20)
           .mapToObj(i -> generateRequest())
           .collect(Collectors.toList());
+      // get responses with IDs between 0x0 and 0x300 (inclusively) only
       final Iterator<Response> responses = cloud.sendCANFrames(
-          Collections.singletonList(generateRequest()), CANResponseFilter.filterIds(0, 0x300));
+          requests, CANResponseFilter.filterIds(0, 0x300));
 
       while (responses.hasNext()) {
         final Response response = responses.next();
+        logRequestFrame(response.getRequest());
         handleResponse(response.getResponses());
       }
     } catch (final Exception e) {
@@ -98,22 +101,24 @@ public final class Fuzzing {
   private static void handleData(final List<CANFrame> canFrames) {
     final Map<Integer, Long> ids = canFrames.stream().collect(
         Collectors.groupingBy(CANFrame::getId, Collectors.counting()));
-    final int uniqueKeys = ids.size();
-    log.info("Amount of unique keys: " + uniqueKeys);
-    ids.forEach((id, count) ->
-        log.info("ID 0x" + Integer.toHexString(id) + ": " + count + " responses"));
+    final int uniqueIDs = ids.size();
+    log.info("Amount of unique IDs: " + uniqueIDs);
+    ids.forEach((id, num) ->
+        log.info("ID 0x" + Integer.toHexString(id) + ": " + num + " responses"));
   }
 
   private static void handleResponse(Iterator<CANFrame> responses) {
     while (responses.hasNext()) {
-      frames.add(responses.next());
+      final CANFrame frame = responses.next();
+      logResponseFrame(frame);
+      frames.add(frame);
     }
   }
 
   private static void runFuzzing(final Device device, final API api, final Token token) {
     // open a connection to cloud
     cloud = api.connectToDevice(device, token);
-    for (count = 0; count < maxCount; count++) {
+    for (count = 0; count < ITER_COUNT; count++) {
       makeRequest(cloud);
     }
     // handle collected frames to handler
@@ -150,5 +155,13 @@ public final class Fuzzing {
     } else {
       log.error("Couldn't authenticate in VT cloud");
     }
+  }
+
+  private static void logRequestFrame(final CANFrame frame) {
+    log.info("===>{}", frame);
+  }
+
+  private static void logResponseFrame(final CANFrame frame) {
+    log.info("<==={}", frame);
   }
 }
