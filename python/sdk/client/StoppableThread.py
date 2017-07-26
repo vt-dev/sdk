@@ -1,12 +1,15 @@
 import threading
-from time import sleep
-
-from queue import Queue, Empty
+from time import sleep, time
 
 import sdk.util as util
 from sdk.client.WSClient import WSClient
-from sdk.data.Messages import Message
+from sdk.data.Messages import Message, Ping
 from sdk.data.Messages import CANFinal
+
+if util.P3:
+    from queue import Queue, Empty
+else:
+    from Queue import Queue, Empty
 
 
 class StoppableThread(threading.Thread):
@@ -35,9 +38,15 @@ class SendingThread(StoppableThread):
         StoppableThread.__init__(self, name='SendingThread')
         self.__ws = ws
         self.__queue = sending_queue
+        self.__ping_time = time()
+        self.daemon = True
 
     def run(self):
         while not self.stopped():
+            if time() - self.__ping_time > 20:
+                self.__ping_time = time()
+                self.__ws.send(Ping("").to_json())
+
             try:
                 msg = self.__queue.get_nowait()
                 if isinstance(msg, str):
@@ -68,7 +77,7 @@ class ReadingThread(StoppableThread):
             try:
                 response_str = self.__reading_queue.get(timeout=3)
                 self.__reading_queue.task_done()
-                if util.P3:
+                if util.P3 and "decode" in dir(response_str):
                     response_str = response_str.decode('UTF-8')
                 if isinstance(response_str, str):
                     if response_str == WSClient.dead:

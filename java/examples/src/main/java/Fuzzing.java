@@ -16,23 +16,23 @@ import java.util.stream.IntStream;
 @Slf4j
 public final class Fuzzing {
   // CLI arguments parsing init
-  private final static Options options = new Options();
+  private static final Options options = new Options();
   private static final Random rnd = new SecureRandom();
   private static final List<CANFrame> frames = new LinkedList<>();
   private static final long WAIT_TIME = 100;
   // Amount of requests to send
-  private static final int maxCount = 100;
+  private static final int maxCount = 1000;
   private static VTCloud cloud = null;
   private static int count = 0;
 
   static {
-    options.addOption(Arguments.CAR.type, "car", true, "Car Name");
+    options.addOption(Arguments.DEVICE.type, "device", true, "Device ID");
     options.addOption(Arguments.KEY.type, "key", true, "API key");
     options.addOption(Arguments.SECRET.type, "secret", true, "Secret");
   }
 
   private static void showUsage() {
-    log.error("Usage: -k <key> -s <secret> [-c <\"device name\">]");
+    log.error("Usage: -k <key> -s <secret> [-d <\"device id\">]");
     die();
   }
 
@@ -51,10 +51,10 @@ public final class Fuzzing {
         cmd.hasOption(Arguments.SECRET.type)) {
       final String key = cmd.getOptionValue(Arguments.KEY.type);
       final String secret = cmd.getOptionValue(Arguments.SECRET.type);
-      final String car = cmd.hasOption(Arguments.CAR.type) ?
-          cmd.getOptionValue(Arguments.CAR.type) : null;
+      final String deviceId = cmd.hasOption(Arguments.DEVICE.type) ?
+          cmd.getOptionValue(Arguments.DEVICE.type) : null;
       // Starting real work
-      start(key, secret, car);
+      start(key, secret, deviceId);
     } else {
       showUsage();
     }
@@ -75,9 +75,11 @@ public final class Fuzzing {
     log.info("Iteration # " + count);
     try {
       // Send requests to device and wait for a response
+      final Collection<Request> requests = IntStream.range(0, 100)
+          .mapToObj(i -> generateRequest())
+          .collect(Collectors.toList());
       final Iterator<Response> responses = cloud.sendCANFrames(
-          Collections.singletonList(generateRequest()), CANResponseFilter.filterIds(
-              IntStream.range(0, 0x300).boxed().collect(Collectors.toSet())));
+          Collections.singletonList(generateRequest()), CANResponseFilter.filterIds(0, 0x300));
 
       while (responses.hasNext()) {
         final Response response = responses.next();
@@ -120,7 +122,7 @@ public final class Fuzzing {
     cloud.close();
   }
 
-  private static void start(final String key, final String secret, final String car) {
+  private static void start(final String key, final String secret, final String deviceId) {
     // Create API connection class
     final API api = API.get();
     // Get authentication token
@@ -131,34 +133,22 @@ public final class Fuzzing {
 
       Device device = null;
       for (final Device d : devices) {
-        if (car == null ||
-            (d.isAvailable() && d.getName().equalsIgnoreCase(car))) {
+        if (deviceId == null ||
+            (d.isAvailable() && d.getDeviceId().equalsIgnoreCase(deviceId))) {
           device = d;
           break;
         }
       }
 
       if (device != null) {
-        log.info("Using car: {}", device.getName());
+        log.info("Using device: {}", device.getName());
         runFuzzing(device, api, token);
       } else {
-        log.error("Couldn't find a car, please use correct name and reserve it");
+        log.error("Couldn't find a device, please use correct device id and/or reserve it");
         die();
       }
     } else {
       log.error("Couldn't authenticate in VT cloud");
-    }
-  }
-
-  enum Arguments {
-    CAR("c"),
-    KEY("k"),
-    SECRET("s");
-
-    final String type;
-
-    Arguments(final String type) {
-      this.type = type;
     }
   }
 }

@@ -70,7 +70,7 @@ public class SimpleEntitiesSerializationTest {
         .build());
     final CANResponseFilter filter = CANResponseFilter.filterBytes(byteFilters);
 
-    final String expectedJson = String.format("{\"interval\":1000,\"canResponseFilter\":{\"ids\":[],\"byteFilters\":[{\"byte0\":null,\"byte1\":%d,\"byte2\":null,\"byte3\":%d,\"byte4\":null,\"byte5\":null,\"byte6\":%d,\"byte7\":null}]}}", bytes[0], bytes[1], bytes[2]);
+    final String expectedJson = String.format("{\"interval\":1000,\"canResponseFilter\":{\"ids\":[],\"byteFilters\":[{\"byte0\":null,\"byte1\":%d,\"byte2\":null,\"byte3\":%d,\"byte4\":null,\"byte5\":null,\"byte6\":%d,\"byte7\":null}],\"minId\":-1,\"maxId\":-1}}", bytes[0], bytes[1], bytes[2]);
 
     final SniffMessage sniffMessage = new SniffMessage(interval, filter);
 
@@ -105,7 +105,7 @@ public class SimpleEntitiesSerializationTest {
     final byte[] encodedData = Base64.getEncoder().encode(requestBytes);
 
     final String expectedJson = String.format(
-        "{\"requests\":[{\"canFrame\":{\"timestamp\":%d,\"id\":%d,\"data\":\"%s\"},\"waitTime\":1000}],\"canResponseFilter\":{\"ids\":[],\"byteFilters\":[{\"byte0\":null,\"byte1\":%d,\"byte2\":null,\"byte3\":%d,\"byte4\":null,\"byte5\":null,\"byte6\":%d,\"byte7\":null}]}}",
+        "{\"requests\":[{\"canFrame\":{\"timestamp\":%d,\"id\":%d,\"data\":\"%s\"},\"waitTime\":1000}],\"canResponseFilter\":{\"ids\":[],\"byteFilters\":[{\"byte0\":null,\"byte1\":%d,\"byte2\":null,\"byte3\":%d,\"byte4\":null,\"byte5\":null,\"byte6\":%d,\"byte7\":null}],\"minId\":-1,\"maxId\":-1}}",
         request.getCanFrame().getTimestamp(), frameId, new String(encodedData), bytes[0], bytes[1], bytes[2]);
 
     assertEquals(expectedJson, actualJson, "Incorrect JSON serialization");

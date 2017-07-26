@@ -1,3 +1,5 @@
+import itertools
+
 from sdk.client.Client import Client
 from sdk.data.CANResponseFilter import CANResponseFilter
 from sdk.data.CANResponsesIterator import CANResponsesIterator
@@ -22,13 +24,21 @@ def _get_ws_url(host, port, path, device):
     return url
 
 
+def _batches(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
 class VTCloud(object):
-    """Device interaction class"""
+    """Device API class"""
     __id = 0
 
     __ws_path = '/public/notify/device'
 
     __queues = {}
+
+    __MAX_REQUESTS = 100
 
     def __init__(self, device, token, api_host, api_port, cert_path):
         """
@@ -43,7 +53,7 @@ class VTCloud(object):
         self.is_open = False
         url = _get_ws_url(api_host, api_port, self.__ws_path, device)
         headers = [('Authorization', token.get_bearer())]
-        self.__client = Client(url, headers, cert_path)
+        self.__client = Client(url, headers, None)
 
     def send_can_frames(self, requests, can_response_filter):
         """
@@ -52,7 +62,8 @@ class VTCloud(object):
         :param CANResponseFilter can_response_filter: filter for response CAN frames
         :return iterator for CANFrame request-responses tuples, 'responses' is also an iterator
         """
-        return self.send_can_query(Query(requests, can_response_filter))
+        batches = [Query(reqs, can_response_filter) for reqs in _batches(requests, self.__MAX_REQUESTS)]
+        return itertools.chain.from_iterable((self.send_can_query(q) for q in batches))
 
     def send_can_query(self, query):
         """
@@ -74,7 +85,7 @@ class VTCloud(object):
         :param int interval: time limit
         :param CANResponseFilter can_response_filter: filter for response CAN frames
         """
-        self.sniff_by_query(SniffQuery(interval, can_response_filter))
+        return self.sniff_by_query(SniffQuery(interval, can_response_filter))
 
     def sniff_by_query(self, query):
         """

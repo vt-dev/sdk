@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import collections
 import getopt
 import random
@@ -6,7 +8,6 @@ import sys
 from sdk.API import API
 from sdk.data.CANFrame import CANFrame
 from sdk.data.CANResponseFilter import CANResponseFilter
-from sdk.data.Query import Query
 from sdk.data.Request import Request
 
 fuzz_count = 10  # type: int
@@ -20,8 +21,9 @@ def count_stats(responses):
     """
     ids = {}
     for response in responses:
-        print("Request received, id: " + hex(response.request.frame_id))
+        log_frame(response.request)
         for frame in response.iterator():
+            log_frame(frame)
             if frame.frame_id in ids:
                 ids[frame.frame_id] += 1
             else:
@@ -33,11 +35,11 @@ def count_stats(responses):
 
 
 def usage():
-    print("Usage: fuzzing.py -k <key> -s <secret> [-c <\"device name\">]")
+    print("Usage: fuzzing.py -k <key> -s <secret> [-d <\"device id\">]")
     sys.exit(2)
 
 
-def setup(api_key, secret, device_name, cert_path):
+def setup(api_key, secret, device_id, cert_path):
     # create api connection
     api = API(cert_path=cert_path)
     # get authentication token
@@ -46,15 +48,15 @@ def setup(api_key, secret, device_name, cert_path):
     devices = api.get_connected_devices(token)
     # find available device
     for dev in devices:
-        if dev.is_available_now() and ((not device_name) or dev.name == device_name):
-            print('Found car: ' + str(dev))
+        if dev.is_available_now() and ((not device_id) or dev.device_id == device_id):
+            print('Found device: ' + str(dev))
             return api.connect_to_device(token, dev)
     else:
         print("Couldn't find device")
         sys.exit(3)
 
 
-def generate_query():
+def generate_request():
     # Generate random request to device
     data_length = random.randint(1, 7)
     data = bytearray((random.getrandbits(8) for i in range(data_length)))
@@ -64,38 +66,44 @@ def generate_query():
     return request
 
 
-def fuzz(api_key, secret, device_name, cert_path):
-    cloud = setup(api_key, secret, device_name, cert_path)
+def fuzz(api_key, secret, device_id, cert_path):
+    cloud = setup(api_key, secret, device_id, cert_path)
     try:
-        requests = Query([generate_query() for i in range(fuzz_count)],
-                         CANResponseFilter.filter_id({x for x in range(0x300)}))
-        ids = [hex(r.frame.frame_id) for r in requests.requests]
+        requests = [generate_request() for _ in range(fuzz_count)]
+        ids = [hex(r.frame.frame_id) for r in requests]
         print("Send request with ids: " + str(ids))
-        count_stats(cloud.send_can_query(requests))
+        count_stats(cloud.send_can_frames(requests, CANResponseFilter.filter_min_max_ids(0, 0x300)))
     finally:
         cloud.close()
+
+
+def log_frame(frame):
+    if frame.response:
+        print('<===' + frame.to_json())
+    else:
+        print('===>' + frame.to_json())
 
 
 def main(argv):
     # Parsing CLI arguments
     api_key = ''
     secret = ''
-    device_name = ''
+    device_id = ''
     cert_path = ''
     try:
-        opts, args = getopt.getopt(argv, "th:p:k:s:c:a:")
+        opts, args = getopt.getopt(argv, "th:p:k:s:d:a:")
         for opt, arg in opts:
             if opt == '-k':
                 api_key = arg
             elif opt == '-s':
                 secret = arg
-            elif opt == '-c':
-                device_name = arg
+            elif opt == '-d':
+                device_id = arg
             elif opt == '-a':
                 cert_path = arg
         if api_key and secret:
             # starting real work
-            fuzz(api_key, secret, device_name, cert_path)
+            fuzz(api_key, secret, device_id, cert_path)
         else:
             usage()
     except getopt.GetoptError:

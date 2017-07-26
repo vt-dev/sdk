@@ -2,21 +2,24 @@
 
 It contains two versions of the same SDK. One for Java, and one for Python (2.7.x and 3.4+).
 Examples are available in examples folders:
-[for Python](./python/examples/fuzzing.py)
-and [for Java](./java/examples/src/main/java/Fuzzing.java). 
+[for Python](./python/examples/)
+and [for Java](./java/examples/src/main/java/). 
+
+[Python API](./docs/python-api.md)  
+[Java API](./docs/java-api.md)
 
 #### 1. Test with a mocked car:
-Let's start and write basic example for both, python and java SDK.
+Let's start and write a basic example for both, python and java SDK.
 
 We want to create a script, which will connect to a device,
 send CAN message and show us IDs of all responses.
 
 We will need to connect to VT cloud. API key and secret are required for this.
-Let's use test ones (they allow to connect to test device only, which is always available).
+You can use the following API key and secret for testing. They allow you to connect to a mocked car, which is always available.
 
-Key: 0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c
+Key: `0dee4f2e-4b05-445d-b8ea-f8fe6b4b772c`
 
-Secret: 1bcdd94c-a7ed-4e24-b601-6e8753ca3721
+Secret: `1bcdd94c-a7ed-4e24-b601-6e8753ca3721`
 
 Python version:
 ```python
@@ -47,8 +50,7 @@ can_frame = CANFrame(0x700, bytearray([0x1]))
 # and collect all responses from CAN bus for 300 ms
 request = Request(can_frame, 300)
 try:
-    can_query = Query([request], CANResponseFilter.NONE())
-    responses = cloud.send_can_query(can_query)
+    responses = cloud.send_can_frames([request], CANResponseFilter.NONE())
     for response in responses:
         frame_ids = {hex(x.frame_id) for x in response.iterator()}
         print("Request ID: " + hex(response.request.frame_id))
@@ -112,28 +114,49 @@ System.out.println(String.format("%d different ids received: %s",
 
 For more details see examples inside the repository.
 
-#### 2. Test with a real car:
+#### 2. Run examples
+There are a few examples for Python and Java versions.
+
+- Java  
+To run Java examples you'll need maven installed. Install package and then run one of the examples.
+You can pass parameters with `-Dexec.args=`. Run it from `java` folder:
+
+```bash
+mvn install
+mvn compile exec:java -pl examples -Dexec.mainClass="Fuzzing" -Dexec.args="-k <key> -s <secret>"
+```
+
+There are 3 examples: Basic, Fuzzing and CompareSniffs. Check their code [here](./java/examples/src/main/java/).
+
+- Python  
+To run Python examples you'll need to install python package. Go to `python` folder and run
+(you might need sudo/admin privileges):
+
+```bash
+python ./setup.py install
+```
+
+After this you can run examples, like this:
+
+```bash
+python examples/fuzzing.py -k <key> -s <secret>
+```
+
+There are 3 examples: basic, fuzzing, sniff.
+
+#### 3. Test with a real car:
 You need VT account to use real cars. Ask at info@visualthreat.com for one.
 
-1. Go to https://visualthreat.net/autox/ and login.
-2. Go to "Reserve Car", select a car in dropdown at the right and pick available time slot.
-   Click on it to reserve. The car is reserved for you on this time slot, so you can use it at that time with
-   your API key.
+1. Go to [AutoX portal](https://visualthreat.net/autox/) and log in.
+2. Go to "Reserve Car", select a device in the dropdown at the right and pick an available time slot.
+   Click on it to reserve. The device is reserved for you on this time slot, so you can use it at that time with your API key.
    ![reserve.png](docs/reserve.png)
-3. Copy you API key and secret at "API Key/Secret" tab. You can always go there and regenerate it if you think
+3. Copy your API key and secret at "API Key/Secret" tab. You can always go there and regenerate it if you think
    you compromise it.
    ![api-key-secret.png](docs/api-key-secret.png)
    
 Feel free to go to Requests tab and ask for additional cars or any other questions.
-   
-#### 3. For Admins
 
-1. Admin will create a car with time slots on Autox web portal
-![AddDevice.PNG](docs/2364711376-AddDevice.png)
-
-2. A outside user should login to Autox web portal to generate api-key/api-secret and reserve an available car.
-![ApiGenerate.PNG](docs/217926279-ApiGenerate.png)
-
-![ReserveCar.PNG](docs/3034823481-ReserveCar.png)
-  
-3. Copy the generated api-key/api-secret and use this key to authenticate when connect to VTCloud.
+#### 4. Important!
+Don't forget to close Cloud object. Otherwise your connection to a device may hang and will close only after certain amount of time (about a minute in some cases).
+All this time you won't be available to connect to this device with your key-secret pair.

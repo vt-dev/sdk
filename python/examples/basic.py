@@ -1,7 +1,8 @@
+#!/usr/bin/env python
+
 from sdk.API import API
 from sdk.data.CANFrame import CANFrame
 from sdk.data.CANResponseFilter import CANResponseFilter
-from sdk.data.Query import Query
 from sdk.data.Request import Request
 
 if __name__ == "__main__":
@@ -20,7 +21,7 @@ if __name__ == "__main__":
     for dev in devices:
         if dev.is_available_now():
             device = dev
-            print("Selected car: " + device.name)
+            print("Selected device: " + device.name)
             break
 
     # connect to it
@@ -32,8 +33,7 @@ if __name__ == "__main__":
     # and collect all responses from CAN bus for 300 ms
     request = Request(can_frame, 300)
     try:
-        can_query = Query([request], CANResponseFilter.NONE())
-        responses = cloud.send_can_query(can_query)
+        responses = cloud.send_can_frames([request], CANResponseFilter.NONE())
         for response in responses:
             frame_ids = {hex(x.frame_id) for x in response.iterator()}
             print("Request ID: " + hex(response.request.frame_id))

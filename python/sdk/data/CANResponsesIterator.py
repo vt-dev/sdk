@@ -15,6 +15,7 @@ class CANResponsesIterator(object):
     def __init__(self):
         self.queue = Queue()
         self.__last = CANResponse(None)
+        self.__last.finished = False
 
     def __repr__(self):
         return 'CANResponsesIterator(total=%d)' % (self.queue.qsize())
@@ -43,7 +44,7 @@ class CANResponsesIterator(object):
                 break
 
     def stop(self):
-        if not self.__last.empty():
+        if not self.__last.finished:
             self.queue.put_nowait(self.__last)
         self.__last.stop()
         self.queue.put_nowait(self.__POISON_PILL)
@@ -53,7 +54,8 @@ class CANResponsesIterator(object):
             if frame.response:
                 self.__last.add(frame)
             else:
-                if not self.__last.empty():
-                    self.queue.put_nowait(self.__last)
-                    self.__last.stop()
+                if not self.__last.finished:
+                    if not self.__last.empty() or self.__last.request is not None:
+                        self.queue.put_nowait(self.__last)
+                        self.__last.stop()
                 self.__last = CANResponse(frame)

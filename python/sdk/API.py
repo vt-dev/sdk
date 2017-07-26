@@ -31,7 +31,7 @@ class API(object):
 
     __devices_path = '/service/autox/api/remote/devices/reserved'
 
-    def __init__(self, api_host='visualthreat.net', api_port=9000, cert_path=''):
+    def __init__(self, api_host='visualthreat.net', api_port=9001, cert_path=''):
         """
         :param str api_host:
         :param int api_port:

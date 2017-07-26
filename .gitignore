@@ -16,3 +16,9 @@ python/client_sdk.egg-info
 python/dist
 python/sdk.egg-info
 .cache
+
+### Examples
+*.traffic
+
+### Mac OS
+.DS_Store

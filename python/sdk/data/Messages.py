@@ -1,5 +1,7 @@
 import json
 
+import sdk.util as util
+from sdk.data import compression
 from sdk.data.CANFrame import CANFrame
 from sdk.data.Mappable import Mappable, NoneAsMappable, ListAsMappable, StringAsMappable
 
@@ -77,27 +79,27 @@ class Ping(Message):
 
 class Sniff(Message):
     """Sniff message"""
-    _type = 'CAN_SNIFF'
+    _type = 'ZIP_CAN_SNIFF'
 
     def __init__(self, _id, message):
         """
         :param integer _id:
         :param  Mappable message:
         """
-        Message.__init__(self, self._type, message)
+        Message.__init__(self, self._type, compression.compress(message.to_json()))
         self.set_id(_id)
 
 
 class CANRequest(Message):
     """Sniff message"""
-    _type = 'CAN_REQUEST'
+    _type = 'ZIP_CAN_REQUEST'
 
     def __init__(self, _id, message):
         """
         :param integer _id:
         :param  Mappable message:
         """
-        Message.__init__(self, self._type, message)
+        Message.__init__(self, self._type, compression.compress(message.to_json()))
         self.set_id(_id)
 
 
@@ -155,10 +157,23 @@ class CANFrames(Message):
 
     @staticmethod
     def from_str(obj):
+        if util.P3 and "decode" in dir(obj):
+            obj = obj.decode('UTF-8')
         collection = json.loads(obj)
         mappable_list = ListAsMappable(CANFrame.from_obj)
         mappable_list.populate(collection)
         return CANFrames(mappable_list)
+
+
+class ZIPCANFrames(CANFrames):
+    _type = 'ZIP_CAN_FRAMES'
+
+    def __init__(self, can_frames):
+        CANFrames.__init__(self, can_frames)
+
+    @staticmethod
+    def from_str(obj):
+        return CANFrames.from_str(compression.decompress(obj)[0])
 
 
 types = {Ping._type: Ping,
@@ -167,4 +182,5 @@ types = {Ping._type: Ping,
          CANRequest._type: CANRequest,
          CANCancel._type: CANCancel,
          CANFrames._type: CANFrames,
+         ZIPCANFrames._type: ZIPCANFrames,
          CANFinal._type: CANFinal}

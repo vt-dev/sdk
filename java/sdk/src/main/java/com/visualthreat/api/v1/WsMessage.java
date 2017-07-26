@@ -16,9 +16,12 @@ class WsMessage {
     PING("ping"),
     CAN_CANCEL("can-cancel"),
     CAN_REQUEST("can-request"),
+    ZIP_CAN_REQUEST("zip-can-request"),
     CAN_SNIFF("can-sniff"),
+    ZIP_CAN_SNIFF("zip-can-sniff"),
     DISCONNECTED("disconnected"),
     CAN_FINAL("can-final"),
+    ZIP_CAN_FRAMES("zip-can-frames"),
     CAN_FRAMES("can-frames");
 
     private final String name;

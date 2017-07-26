@@ -145,11 +145,11 @@ public class APIImpl implements API {
 
   private HttpURLConnection request(final String request, final String method) {
     try {
-      final URL url = new URL(buildUrl("https://", hostname, port, request));
+      final URL url = new URL(buildUrl("https://", hostname, 443, request));
 
       final HttpURLConnection con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod(method);
-      con.setRequestProperty("Origin", buildUrl("https://", hostname, port, ""));
+      con.setRequestProperty("Origin", buildUrl("https://", hostname, 443, ""));
       return con;
     } catch (final IOException e) {
       log.error("Can't make request to: " + hostname, e);

@@ -55,12 +55,13 @@ def get_reference_can_cancel():
     return can_cancell
 
 
-reference_can_request_json = \
-    r'{"id": 2, "message": "{\"canResponseFilter\": {}, \"requests\": [{\"canFrame\": ' \
-    r'{\"data\": \"dGVzdC10ZXN0\", \"id\": 1792, \"timestamp\": 1494508949810}, \"waitTime\": 100}, ' \
-    r'{\"canFrame\": ' \
-    r'{\"data\": \"YXNkcXdlenhj\", \"id\": 1792, \"timestamp\": 1494508949811}, \"waitTime\": 100}]}", ' \
-    r'"type": "CAN_REQUEST"}'
+reference_can_request_json = r'{"id": 2, "message": "UEsDBBQAAAAAAFug9UpFyRz96QAAAOkAAAALAAAAY2FuLnRyYWZmaWN7ImNhblJ' \
+                             r'lc3BvbnNlRmlsdGVyIjoge30sICJyZXF1ZXN0cyI6IFt7ImNhbkZyYW1lIjogeyJkYXRhIjogImRHVnpkQzEw' \
+                             r'WlhOMCIsICJpZCI6IDE3OTIsICJ0aW1lc3RhbXAiOiAxNDk0NTA4OTQ5ODEwfSwgIndhaXRUaW1lIjogMTAwf' \
+                             r'SwgeyJjYW5GcmFtZSI6IHsiZGF0YSI6ICJZWE5rY1hkbGVuaGoiLCAiaWQiOiAxNzkyLCAidGltZXN0YW1wIj' \
+                             r'ogMTQ5NDUwODk0OTgxMX0sICJ3YWl0VGltZSI6IDEwMH1dfVBLAQIUAxQAAAAAAFug9UpFyRz96QAAAOkAAAA' \
+                             r'LAAAAAAAAAAAAAACAAQAAAABjYW4udHJhZmZpY1BLBQYAAAAAAQABADkAAAASAQAAAAA=", ' \
+                             r'"type": "ZIP_CAN_REQUEST"}'
 
 
 def get_reference_can_request():
@@ -78,7 +79,9 @@ def get_reference_can_request():
 
 
 reference_sniff_json = \
-    r'{"id": 1, "message": "{\"canResponseFilter\": {}, \"interval\": 6000}", "type": "CAN_SNIFF"}'
+    r'{"id": 1, "message": "UEsDBBQAAAAAAJyg9UoxXeJwKwAAACsAAAALAAAAY2FuLnRyYWZmaWN7ImNhblJlc3BvbnNlRmlsdGVyIjoge3' \
+    r'0sICJpbnRlcnZhbCI6IDYwMDB9UEsBAhQDFAAAAAAAnKD1SjFd4nArAAAAKwAAAAsAAAAAAAAAAAAAAIABAAAAAGNhbi50cmFmZmljUEsFBg' \
+    r'AAAAABAAEAOQAAAFQAAAAAAA==", "type": "ZIP_CAN_SNIFF"}'
 
 
 def get_reference_sniff():
@@ -99,11 +102,3 @@ def test_disconnected_should_be_deserialized_correct():
 
 def test_can_cancel_should_be_serialized_correctly():
     assert get_reference_can_cancel().to_json() == reference_can_cancel_json
-
-
-def test_sniff_request_should_be_serialized_correctly():
-    assert get_reference_sniff().to_json() == reference_sniff_json
-
-
-def test_request_should_be_serialized_correctly():
-    assert get_reference_can_request().to_json() == reference_can_request_json

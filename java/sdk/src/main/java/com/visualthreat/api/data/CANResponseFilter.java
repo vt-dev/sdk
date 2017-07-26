@@ -1,10 +1,13 @@
 package com.visualthreat.api.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+import javax.swing.text.html.Option;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -15,22 +18,39 @@ import java.util.Set;
 @Value
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CANResponseFilter {
-  public static final CANResponseFilter NONE = new CANResponseFilter(Collections.emptySet(), Collections.emptySet());
+  private static final Integer WRONG_ID = -1;
+
+  public static final CANResponseFilter NONE = new CANResponseFilter(Collections.emptySet(), Collections.emptySet(),
+      WRONG_ID, WRONG_ID);
   public static final int MAX_ID = 0x7ff;
 
+  @JsonProperty
   private final Set<Integer> ids;
+  @JsonProperty
   private final Set<ByteArrayFilter> byteFilters;
+  @JsonProperty
+  private final Integer minId;
+  @JsonProperty
+  private final Integer maxId;
 
   public static CANResponseFilter filter(final Set<Integer> ids, final Set<ByteArrayFilter> byteFilters) {
-    return new CANResponseFilter(ids, byteFilters);
+    return new CANResponseFilter(ids, byteFilters, WRONG_ID, WRONG_ID);
+  }
+
+  public static CANResponseFilter filter(final Set<Integer> ids, final Set<ByteArrayFilter> byteFilters, final int minId, final int maxId) {
+    return new CANResponseFilter(ids, byteFilters, WRONG_ID, WRONG_ID);
   }
 
   public static CANResponseFilter filterIds(final Set<Integer> ids) {
-    return new CANResponseFilter(ids, Collections.emptySet());
+    return new CANResponseFilter(ids, Collections.emptySet(), WRONG_ID, WRONG_ID);
+  }
+
+  public static CANResponseFilter filterIds(final int minId, final int maxId) {
+    return new CANResponseFilter(Collections.emptySet(), Collections.emptySet(), minId, maxId);
   }
 
   public static CANResponseFilter filterBytes(final Set<ByteArrayFilter> byteFilters) {
-    return new CANResponseFilter(Collections.emptySet(), byteFilters);
+    return new CANResponseFilter(Collections.emptySet(), byteFilters, WRONG_ID, WRONG_ID);
   }
 
   public static CANResponseFilter filterId(final int id) {

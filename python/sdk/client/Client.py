@@ -1,8 +1,12 @@
-from queue import Queue
-
+import sdk.util as util
 from sdk.client.StoppableThread import SendingThread, ReadingThread
 from sdk.client.WSClient import WSClient
 from sdk.data.Messages import Message
+
+if util.P3:
+    from queue import Queue
+else:
+    from Queue import Queue
 
 
 class Client(object):
@@ -41,7 +45,7 @@ class Client(object):
         """
         Simply stop threads and wait for termination
         """
-        self.__sending_queue.join()
+        # self.__sending_queue.join()
         self.__sending_thread.stop()
         self.__ws.close(code=1000, reason='Goodbye')
         self.__reading_thread.stop()

@@ -21,7 +21,19 @@ class CANResponseFilterTest {
   void idFilterToJson() throws JsonProcessingException {
     final int id = rnd.nextInt(CANResponseFilter.MAX_ID + 1);
     final CANResponseFilter filter = CANResponseFilter.filterId(id);
-    final String expectedJson = String.format("{\"ids\":[%d],\"byteFilters\":[]}", id);
+    final String expectedJson = String.format("{\"ids\":[%d],\"byteFilters\":[],\"minId\":-1,\"maxId\":-1}", id);
+    final String actualJson = json.writeValueAsString(filter);
+
+    assertEquals(expectedJson, actualJson, "Incorrect JSON serialization");
+  }
+
+  @Test
+  @DisplayName("ID Filter, min max")
+  void idFilterMinMaxToJson() throws JsonProcessingException {
+    final int minId = rnd.nextInt(CANResponseFilter.MAX_ID);
+    final int maxId = rnd.nextInt(CANResponseFilter.MAX_ID + 1 - minId) + minId;
+    final CANResponseFilter filter = CANResponseFilter.filterIds(minId, maxId);
+    final String expectedJson = String.format("{\"ids\":[],\"byteFilters\":[],\"minId\":%d,\"maxId\":%d}", minId, maxId);
     final String actualJson = json.writeValueAsString(filter);
 
     assertEquals(expectedJson, actualJson, "Incorrect JSON serialization");
@@ -44,7 +56,7 @@ class CANResponseFilterTest {
 
     final String expectedJson = String.format("{\"ids\":[],\"byteFilters\":" +
             "[{\"byte0\":null,\"byte1\":%d,\"byte2\":null,\"byte3\":%d," +
-            "\"byte4\":null,\"byte5\":null,\"byte6\":%d,\"byte7\":null}]}",
+            "\"byte4\":null,\"byte5\":null,\"byte6\":%d,\"byte7\":null}],\"minId\":-1,\"maxId\":-1}",
         bytes[0], bytes[1], bytes[2]);
     final String actualJson = json.writeValueAsString(filter);
 
@@ -68,7 +80,7 @@ class CANResponseFilterTest {
 
     final String expectedJson = String.format("{\"ids\":[%d],\"byteFilters\":" +
             "[{\"byte0\":%d,\"byte1\":null,\"byte2\":null,\"byte3\":null," +
-            "\"byte4\":null,\"byte5\":%d,\"byte6\":null,\"byte7\":null}]}",
+            "\"byte4\":null,\"byte5\":%d,\"byte6\":null,\"byte7\":null}],\"minId\":-1,\"maxId\":-1}",
         ids.iterator().next(), bytes[0], bytes[1]);
     final String actualJson = json.writeValueAsString(filter);
 

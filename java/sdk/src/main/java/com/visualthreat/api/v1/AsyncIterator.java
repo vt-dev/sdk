@@ -4,14 +4,14 @@ import lombok.Getter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class AsyncIterator<T> implements Iterator<T> {
   @SuppressWarnings("unchecked")
   private final T TERMINATOR = (T) new Object();
   @Getter
-  private final BlockingDeque<T> queue = new LinkedBlockingDeque<>();
+  private final BlockingQueue<T> queue = new LinkedBlockingQueue<>();
 
   private T next = TERMINATOR;
 
@@ -24,6 +24,7 @@ public class AsyncIterator<T> implements Iterator<T> {
     try {
       next = queue.take(); // blocks
     } catch (final InterruptedException e) {
+      // stop iterator, if we have been interrupted
       return false;
     }
 
@@ -33,7 +34,7 @@ public class AsyncIterator<T> implements Iterator<T> {
   @Override
   public T next() {
     if (hasNext()) {
-      T tmp = next;
+      final T tmp = next;
       next = TERMINATOR;
       return tmp;
     }

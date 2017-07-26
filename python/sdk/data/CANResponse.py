@@ -9,7 +9,7 @@ else:
 class CANResponse(object):
     __POISON_PILL = 'poison-pill'
 
-    __slots__ = ('request', 'response_queue')
+    __slots__ = ('request', 'response_queue', 'finished')
 
     def __init__(self, request):
         """
@@ -17,6 +17,7 @@ class CANResponse(object):
         """
         self.request = request
         self.response_queue = Queue()
+        self.finished = False
 
     def __repr__(self):
         return 'CANResponseIterator(request=%s, total_responses=%d)' % (self.request, self.response_queue.qsize())
@@ -36,6 +37,7 @@ class CANResponse(object):
         self.response_queue.put_nowait(can_frame)
 
     def stop(self):
+        self.finished = True
         self.response_queue.put_nowait(self.__POISON_PILL)
 
     def iterator(self):
