@@ -38,15 +38,33 @@ public class APIImpl implements API {
   private static final String CONNECT_TO = "/public/notify/device/";
   private static final int MAX_MESSAGE_SIZE = 2 * 1024 * 1024;
 
-  private final String hostname;
-  private final int port;
+  private static final int PORT = 9000;
+  private static final int PREFIX_LEN = 2;
+  private static final int CORRECT_LEN = 38;
+  private static final String DEFAULT = "01";
+  private static final Map<String, String> endpoints = new HashMap<>();
+  static {{
+    endpoints.put("01", "visualthreat.net");
+    endpoints.put("02", "us.visualthreat.net");
+  }}
+
+  private String hostname;
 
   private static String buildUrl(final String secure, final String host, final int port, final String path) {
     return secure + host + ":" + port + path;
   }
 
+  private void initHostname(final String apiKey) {
+    final String prefix = apiKey.length() == CORRECT_LEN ?
+        apiKey.substring(0, PREFIX_LEN).toLowerCase() :
+        DEFAULT;
+
+    hostname = endpoints.getOrDefault(prefix, endpoints.get(DEFAULT));
+  }
+
   @Override
   public Token authenticate(final String apiKey, final String secret) throws APIAuthException {
+    initHostname(apiKey);
     final HttpURLConnection con = postRequest(AUTH, buildAuthCredentials(apiKey, secret));
     if (con != null) {
       final String response = readResponse(con);
@@ -87,7 +105,7 @@ public class APIImpl implements API {
   }
 
   private Session getSession(final Device device, final Token token) throws IOException, DeploymentException {
-    final String url = buildUrl("wss://", hostname, port, CONNECT_TO) + device.getDeviceId();
+    final String url = buildUrl("wss://", hostname, PORT, CONNECT_TO) + device.getDeviceId();
 
     final ClientManager client = ClientManager.createClient();
     final SSLContextConfigurator defaultConfig = new SSLContextConfigurator();

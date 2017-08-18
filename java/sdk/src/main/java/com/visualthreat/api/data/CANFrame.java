@@ -7,6 +7,8 @@ import lombok.Getter;
  * Represents CAN Frame.
  */
 public class CANFrame {
+  private static final int TO_UNSIGNED_BYTE = 0xFF;
+
   @Getter
   private final long timestamp;
   @Getter
@@ -28,13 +30,13 @@ public class CANFrame {
   public String toString() {
     return String.format("CANFrame(timestamp=%d, id=0x%s, data=[0x%s, 0x%s, 0x%s, 0x%s, 0x%s, 0x%s, 0x%s, 0x%s])",
         timestamp, Integer.toHexString(id),
-        Integer.toHexString(data[0]),
-        Integer.toHexString(data[1]),
-        Integer.toHexString(data[2]),
-        Integer.toHexString(data[3]),
-        Integer.toHexString(data[4]),
-        Integer.toHexString(data[5]),
-        Integer.toHexString(data[6]),
-        Integer.toHexString(data[7]));
+        Integer.toHexString(data[0] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[1] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[2] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[3] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[4] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[5] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[6] & TO_UNSIGNED_BYTE),
+        Integer.toHexString(data[7] & TO_UNSIGNED_BYTE));
   }
 }

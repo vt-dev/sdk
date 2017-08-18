@@ -31,6 +31,11 @@ class API(object):
 
     __devices_path = '/service/autox/api/remote/devices/reserved'
 
+    __endpoints = {
+        "01": "visualthreat.net",
+        "02": "us.visualthreat.net"
+    }
+
     def __init__(self, api_host='visualthreat.net', api_port=9001, cert_path=''):
         """
         :param str api_host:
@@ -41,6 +46,15 @@ class API(object):
         self.__api_port = api_port
         self.__cert_path = cert_path
 
+    def __init_host(self, api_key):
+        if len(api_key) == 38:
+            try:
+                self.__api_host = self.__endpoints[api_key[0:2]]
+            except KeyError:
+                pass
+        else:
+            self.__api_host = self.__endpoints["01"]
+
     def authenticate(self, api_key, secret):
         """
         Authenticate to cloud with defined api_key and secret.
@@ -50,6 +64,7 @@ class API(object):
         :return: Authentication token
         :rtype: Token
         """
+        self.__init_host(api_key)
         data = {'username': api_key, 'password': secret, 'grant_type': 'key'}
 
         try:
@@ -61,7 +76,7 @@ class API(object):
                 public_token = requests.post(public_url, data=data).json()['access_token']
 
             return Token(public_token, public_token)
-        except (ValueError):
+        except ValueError:
             raise APIAuthException('Could not get token from cloud.')
 
     def get_connected_devices(self, token):

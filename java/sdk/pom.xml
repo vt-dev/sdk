@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sdk</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 
     <parent>
         <artifactId>api</artifactId>
         <groupId>com.visualthreat</groupId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
     </parent>
 
     <build>

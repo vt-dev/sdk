@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(name='sdk',
-      version='1.0.0',
+      version='1.4.2',
       description='Client API for AutoX',
-      author='Alexandr Mihailov',
-      author_email='mixeyy@gmail.com',
+      author='Vt Dev',
+      author_email='jeffrey@visualthreat.com',
       license='MIT',
       setup_requires=['pytest-runner'],
       tests_require=['pytest', 'pytest-cov'],

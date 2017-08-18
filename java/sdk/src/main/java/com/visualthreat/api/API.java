@@ -7,21 +7,16 @@ import com.visualthreat.api.v1.APIImpl;
 import com.visualthreat.api.v1.Token;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Interface for 3rd party API.
  * Connects to CAN bus devices via VT cloud.
  */
 public interface API {
-  String PROD_HOST = "visualthreat.net";
-  int PROD_PORT = 9000;
-
   static API get() {
-    return new APIImpl(PROD_HOST, PROD_PORT);
-  }
-
-  static API get(final String hostname, final int port) {
-    return new APIImpl(hostname, port);
+    return new APIImpl();
   }
 
   /**
