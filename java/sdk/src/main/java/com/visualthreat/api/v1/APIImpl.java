@@ -44,7 +44,7 @@ public class APIImpl implements API {
   private static final String DEFAULT = "01";
   private static final Map<String, String> endpoints = new HashMap<>();
   static {{
-    endpoints.put("01", "visualthreat.net");
+    endpoints.put("01", "edu.visualthreat.net");
     endpoints.put("02", "us.visualthreat.net");
   }}
 

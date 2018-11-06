@@ -1,7 +1,12 @@
+package com.visualthreat.api.tests;
+
 enum Arguments {
   DEVICE("d"),
   KEY("k"),
-  SECRET("s");
+  SECRET("s"),
+  TEST_TYPE("t"),
+  SNIFF_OUTPUT_PATH("p"),
+  SNIFF_LENGTH("l");
 
   final String type;
 

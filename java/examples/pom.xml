@@ -10,7 +10,7 @@
     <parent>
         <artifactId>api</artifactId>
         <groupId>com.visualthreat</groupId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
     </parent>
 
     <dependencies>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.visualthreat</groupId>
             <artifactId>sdk</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
         </dependency>
     </dependencies>
 
@@ -88,7 +88,7 @@
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>
-                                            Fuzzing
+                                            com.visualthreat.api.tests.Fuzzing
                                         </Main-Class>
                                     </manifestEntries>
                                 </transformer>

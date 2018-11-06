@@ -1,3 +1,5 @@
+package com.visualthreat.api.tests;
+
 import com.visualthreat.api.API;
 import com.visualthreat.api.VTCloud;
 import com.visualthreat.api.data.CANFrame;
