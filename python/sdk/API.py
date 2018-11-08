@@ -33,7 +33,8 @@ class API(object):
 
     __endpoints = {
         "01": "visualthreat.net",
-        "02": "us.visualthreat.net"
+        "02": "us.visualthreat.net",
+        "05": "edu.visualthreat.net"
     }
 
     def __init__(self, api_host='visualthreat.net', api_port=9001, cert_path=''):
