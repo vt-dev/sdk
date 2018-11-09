@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Sniff extends AbstractScenario {
+  private static final long SAVE_INTERVAL = 1000;
+
   private String outputPath = "";
   private int sniffLength = 0;
 
@@ -33,6 +35,7 @@ public class Sniff extends AbstractScenario {
   }
 
   private void saveSniffResult(Iterator<CANFrame> frames){
+    long time = System.currentTimeMillis();
     File output = new File(outputPath + "/sniffOutput.traffic");
     try {
       PrintWriter printWriter = new PrintWriter(output);
@@ -40,6 +43,10 @@ public class Sniff extends AbstractScenario {
         final CANFrame frame = frames.next();
         printWriter.println(frame);
         logResponseFrame(frame);
+        final long now = System.currentTimeMillis();
+        if (now - time >= SAVE_INTERVAL) {
+          printWriter.flush();
+        }
       }
       printWriter.close();
     } catch (FileNotFoundException e) {

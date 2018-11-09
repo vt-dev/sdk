@@ -17,8 +17,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.9.7</jackson.version>
-        <junit.version>5.0.0-M3</junit.version>
-        <junit5.version>1.0.0-M3</junit5.version>
+        <junit.version>5.0.0</junit.version>
+        <junit5.version>1.0.0</junit5.version>
         <logback-classic.version>1.1.7</logback-classic.version>
         <lombok.version>1.16.14</lombok.version>
         <slf4j-api.version>1.7.21</slf4j-api.version>

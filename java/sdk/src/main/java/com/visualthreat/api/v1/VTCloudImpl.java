@@ -29,10 +29,7 @@ public class VTCloudImpl implements VTCloud {
   private final AtomicLong id = new AtomicLong();
   private final PingTask pingTask;
   private final Session wsSession;
-
-  private CANFrame requestFrame = SNIFF_FRAME;
-  private AsyncIterator<CANFrame> frames = new AsyncIterator<>();
-
+  private final Set<Long> sniffIDs = Collections.synchronizedSet(new HashSet<>());
 
   VTCloudImpl(final Session wsSession) {
     this.wsSession = wsSession;
@@ -59,6 +56,7 @@ public class VTCloudImpl implements VTCloud {
   public Iterator<CANFrame> sniff(final long interval,
                                   final CANResponseFilter canResponseFilter) {
     final long msgId = this.id.incrementAndGet();
+    sniffIDs.add(msgId);
     final WsMessage message = buildSniffMessage(msgId, interval, canResponseFilter);
     return new FlattenCANIterator(sendWsMessage(msgId, message));
   }
@@ -94,21 +92,39 @@ public class VTCloudImpl implements VTCloud {
     messageHandler(message);
   }
 
+  @SuppressWarnings("Duplicates")
   private void messageHandler(final WsMessage message) throws IOException {
     switch (message.getType()) {
       case CAN_FRAMES:
-        final Collection<APICanMessage> canFrames = Arrays.asList(
-            json.readValue(message.getMessage(), APICanMessage[].class));
+        final APICanMessage[] canFrames = json.readValue(message.getMessage(), APICanMessage[].class);
         final AsyncIterator<Response> async = iterators.get(message.getId());
+        boolean isSniff = sniffIDs.contains(message.getId());
         if (async != null) {
+          AsyncIterator<CANFrame> frames = Optional.ofNullable(async.last())
+              .map(Response::getResponses)
+              .filter(f -> !f.isStopped())
+              .orElseGet(() -> {
+                if (isSniff) {
+                  final AsyncIterator<CANFrame> newIter = new AsyncIterator<>();
+                  async.getQueue().offer(new Response(SNIFF_FRAME, newIter));
+                  return newIter;
+                }
+
+                return null;
+              });
           for (final APICanMessage canFrame : canFrames) {
-            if (!canFrame.isResponse()) {
-              // add frames
-              finish(async);
-              // cleanup
-              requestFrame = canFrame;
+            if (!canFrame.isResponse() && !isSniff) {
+              // stop last iterator
+              if (frames != null) {
+                frames.stop();
+              }
+              // and add new
+              frames = new AsyncIterator<>();
+              async.getQueue().offer(new Response(canFrame, frames));
             } else {
-              frames.getQueue().add(canFrame);
+              if (frames != null) {
+                frames.getQueue().add(canFrame);
+              }
             }
           }
         }
@@ -123,7 +139,10 @@ public class VTCloudImpl implements VTCloud {
       case CAN_FINAL:
         final AsyncIterator<Response> iter = iterators.get(message.getId());
         if (iter != null) {
-          finish(iter);
+          final Response lastResponse = iter.last();
+          if (lastResponse != null) {
+            lastResponse.getResponses().stop();
+          }
           iter.stop();
         }
         break;
@@ -133,11 +152,11 @@ public class VTCloudImpl implements VTCloud {
   }
 
   private void finish(final AsyncIterator<Response> async) {
-    if (requestFrame != SNIFF_FRAME || !frames.getQueue().isEmpty()) {
-      frames.stop();
-      async.getQueue().add(new Response(requestFrame, frames));
-      frames = new AsyncIterator<>();
+    final Response lastResponse = async.last();
+    if (lastResponse != null) {
+      lastResponse.getResponses().stop();
     }
+    async.stop();
   }
 
   private Iterator<Response> sendWsMessage(final long id, final WsMessage wsMessage)
