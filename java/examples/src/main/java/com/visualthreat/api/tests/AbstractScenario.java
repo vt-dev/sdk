@@ -46,7 +46,7 @@ abstract public class AbstractScenario {
   protected static final ArrayList<DiagnosticSession> sessionList =
       new ArrayList<>(Arrays.asList(DiagnosticSession.PROGRAMMING, DiagnosticSession.EXTENDED));
 
-  protected static final int MIN_ID = 0x600;
+  protected static final int MIN_ID = 0x7df;
   protected static final int MAX_ID = 0x7ff;
   protected static final int DEFAULT_MIN_PAYLOAD_LENGTH = 1;
   protected static final int DEFAULT_MAX_PAYLOAD_LENGTH = 8;
@@ -124,15 +124,6 @@ abstract public class AbstractScenario {
     return Arrays.copyOf(GENERIC_PAYLOAD, GENERIC_PAYLOAD.length);
   }
 
-  /**
-   * Generate CANFrame for given length
-   *
-   * @param requestId: ECU ID
-   * @param serviceId: ECU Service ID
-   * @param subFunctionBytes ECU SubFunction bytes list
-   * @param length
-   * @return
-   */
   public static CANFrame fuzzCurrentSubFunction(
       int requestId, int serviceId, List<Byte> subFunctionBytes, int length) {
 
@@ -174,9 +165,6 @@ abstract public class AbstractScenario {
       int offset = 0;
       byte[] curPayLoad = new byte[] {0,0,0,0,0,0,0,0};
 
-      // If payLoad length >=8, it will be a multi Frame message
-      // with consecutive frames(which will be add later)
-      // If payLoad length < 8, it is a single Frame message
       if(i>=8) {
         curPayLoad[0] = (byte) 0x10;
         curPayLoad[0] = (byte) (curPayLoad[0] + (byte)((i >> 8) & 0x0F));
