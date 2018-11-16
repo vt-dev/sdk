@@ -48,17 +48,7 @@ public class ScanSecurityAccess extends AbstractScenario{
     log.info(String.format("Starts testing ECU=0x%X", requestId));
 
     checkSecurityAccessNecessity(requestId, filter);
-    // Test 2: Send 50 requestSeed only requestsSeed Unpredictability
-    //    2.1 Seed unpredictability
-    //    2.2 Get seed length
-    // Send traffic with requestSeed message and measure the response, should not equal
     checkSeedUnpredictabilityTests(requestId, filter);
-
-    // Test 1: Send 50 requestSeed and sendSeed requests and check the following cases one by one
-    //    1.1 Unlocking
-    //    1.2 Is there time delay after security access failed
-    //    1.3 How many attempts are allowed before time delay
-    //    1.4 how long is the time delay
     checkUnlockingAndTimeDelayTests(requestId, filter);
 
   }
@@ -119,8 +109,6 @@ public class ScanSecurityAccess extends AbstractScenario{
     int seedLength = seedLengthMap.containsKey(requestId) ? seedLengthMap.get(requestId) : 0;
     byte[] packet = new byte[]{(byte) seedLength, 0x27, 0x02, 0, 0, 0, 0, 0};
     byte[] byteFlowControlTraffic = new byte[]{0x30, 0, 0, 0, 0, 0, 0, 0};
-    // seedLength <=5 will be single frame
-    // seedLength > 5 will be multi frame
     if(seedLength <= 5){
       for(int i = 3; i < 8; i++){
         Random random = new Random();
@@ -210,8 +198,6 @@ public class ScanSecurityAccess extends AbstractScenario{
       CANFrame request = response.getRequest();
       Iterator<CANFrame> responseIterator = response.getResponses();
       int defaultResponseId = request.getId() + 8;
-      // Get the single response or first frame response for multi frame response
-      // Get the seed for comparison later on.
       while(responseIterator.hasNext()){
         CANFrame responseEntry = responseIterator.next();
         if ( responseEntry.getData()[0] < 0x20) {

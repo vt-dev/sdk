@@ -41,7 +41,6 @@ public class ReadMemoryAddress extends AbstractScenario {
 
     for (Integer requestID : ecuIDAndServicesIDs.keySet()) {
       try {
-        /* Send ReadMemoryByAddress traffic */
         this.sendReadMemoryByAddressTraffic(requestID, filter);
       } catch (final IOException ex) {
         log.error("ECU Dump Memory failed", ex);
@@ -53,7 +52,6 @@ public class ReadMemoryAddress extends AbstractScenario {
     for (long address = this.startAddress; address <= this.stopAddress;
         address += ADDRESS_100M_HEX) {
       final Collection<Request> requests = new ArrayList<>();
-      /* For first 2M, send ReadMemoryByAddress every 16k */
       for (long i = address; i < (address + ADDRESS_2M); i += ADDRESS_16K) {
         createReadTraffic(requests, requestId, i, MAX_READABLE_LENGTH);
       }
@@ -67,17 +65,9 @@ public class ReadMemoryAddress extends AbstractScenario {
   private void createReadTraffic(
       Collection<Request> requests, int requestId, final long address, final byte memorySize) {
     final byte[] byteSingleFrameReadMemoryRequest = {0, 0, 0, 0, 0, 0, 0, 0};
-    /* Transmit Single Frame */
-    /* Bit 4-7: 0x0 because it is a Single Frame (ISO-TP) */
-    /* Bit 0-3: 0x7 because UDS Frame length is 7 */
     byteSingleFrameReadMemoryRequest[0] = 0x07;
-    /* ReadMemoryByAddress Service ID */
     byteSingleFrameReadMemoryRequest[1] = READ_DATA_BY_ADDRESS_SERVICE;
-    /* addressAndLengthFormatIdentifier */
-    /* Bit 4-7: 0x1 because memorySize is 0x1 byte length */
-    /* Bit 0-3: 0x7 because memoryAddress is 4 byte length */
     byteSingleFrameReadMemoryRequest[2] = 0x14;
-    /* memorySize is 0xFF: read 255 bytes from memory */
     byteSingleFrameReadMemoryRequest[7] = memorySize;
 
     byteSingleFrameReadMemoryRequest[3] = (byte) ((address & 0xFF000000) >> 24);

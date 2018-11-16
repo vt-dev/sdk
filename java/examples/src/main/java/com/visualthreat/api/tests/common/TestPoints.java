@@ -25,8 +25,7 @@ public enum TestPoints {
   UDS_DISCOVER_IDS(new TestPoint(
       "uds-discover-ids",
       "CAN Bus System Probing",
-      "Scan all CAN buses inside vehicle and detect all connected ECUs and its ID values. " +
-          "In this way, the CAN bus topology and the ECU list are collected",
+      "",
       SYSTEM_SCAN,
       Arrays.asList(RESPONSE_WAIT_TIME.withDefault(300)),
       Collections.emptyList(), 21)),
@@ -34,8 +33,7 @@ public enum TestPoints {
   UDS_DISCOVER_SERVICES(new TestPoint(
       "uds-discover-service",
       "ECU Scan",
-      "For each ECU found collected in Step \"CAN Bus System Probing\", " +
-          "ECU Scan will emulate all pre-defined test points by simulating attacks onto the ECU",
+      "",
       SYSTEM_SCAN,
       Collections.singletonList(RESPONSE_WAIT_TIME.withDefault(300)),
       Collections.singletonList(UDS_DISCOVER_IDS.id()), 22)),
@@ -43,9 +41,7 @@ public enum TestPoints {
   UDS_DISCOVER_SUBFUNCTIONS(new TestPoint(
       "uds-discover-subfunctions",
       "ECU Deep Scan",
-      "Based on the testing results in Step \"ECU Scan\", further testings are performed on ECUs. " +
-          "Results are analyzed and any noted vulnerabilities, inappropriate responses are logged/flagged " +
-          "for further analysis",
+      "",
       SYSTEM_SCAN,
       Arrays.asList(RESPONSE_WAIT_TIME.withDefault(16)),
       Collections.singletonList(UDS_DISCOVER_SERVICES.id()), 23)),
@@ -53,8 +49,7 @@ public enum TestPoints {
   CAN_FUZZ(new TestPoint(
       "ecu-uds-traffic-fuzzing",
       "ECU Traffic Fuzzing",
-      "Based on what we have learned from current connected CAN Bus, " +
-          "we compose fuzz traffic to verify that CAN still can behave normally",
+      "",
       FUZZING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25)),
@@ -72,8 +67,7 @@ public enum TestPoints {
   CAN_TRAFFIC_RESPONSE_RATE(new TestPoint(
       "can-traffic-response-rate",
       "Traffic Handling",
-      "It checks minimum latency of each ECU process requests. " +
-          "The longer interval means current ECU is more prone to DOS attack.",
+      "",
       FLOODING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25),
@@ -84,7 +78,7 @@ public enum TestPoints {
   DOS_FLOOD(new TestPoint(
       "dos-flood",
       "DOS Attack",
-      "It checks how current connected CAN Bus hand denial-of-service attacks",
+      "",
       FLOODING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25),
@@ -94,9 +88,7 @@ public enum TestPoints {
   SCAN_ROUTINE_CONTROL_VULNERABILITIES(new TestPoint(
       "scan-routine-control-vulnerabilities",
       "Scan Remote Invocation Vulnerabilities",
-      "Based on the found services in Step \"ECU Scan\", " +
-          "it checks whether there are exposed security vulnerabilities of each individual ECU " +
-          "which can be leveraged to achieve \"remote invocation\" functionalities",
+      "",
       TAMPERING,
       Arrays.asList(
           // TODO: session change
@@ -107,9 +99,7 @@ public enum TestPoints {
   SCAN_UDS_SERVICE_VULNERABILITIES(new TestPoint(
       "scan-uds-service-vulnerabilities",
       "Scan Privilege Elevation",
-      "Based on the found services in Step \"ECU Scan\", it checks " +
-          "whether there are exposed security vulnerabilities of each individual ECU " +
-          "which can be leveraged to gain privilege",
+      "",
       TAMPERING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25)),
@@ -118,9 +108,7 @@ public enum TestPoints {
   SCAN_UDS_SUB_FUNCTION_VULNERABILITIES(new TestPoint(
       "scan-uds-sub-function-vulnerabilities",
       "Scan Parameter Tampering",
-      "Based on the found sub-services in Step \"ECU Deep Scan\", it checks " +
-          "whether there are exposed security vulnerabilities of each individual ECU " +
-          "which can be invoked successfully with various random parameter combinations",
+      "",
       TAMPERING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25)),
@@ -129,8 +117,7 @@ public enum TestPoints {
   SECURITY_ACCESS(new TestPoint(
       "security-access",
       "ECU Security Scan",
-      "Based on the found services in Step \"ECU Scan\", " +
-          "it checks whether each ECU meets requirement of access security",
+      "",
       SYSTEM_SCAN,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25),
@@ -141,7 +128,7 @@ public enum TestPoints {
   SIMULATE_REPROGRAMMING(new TestPoint(
       "simulate-reprogramming",
       "Simulate Reprogramming Attack",
-      "It checks whether we can re-flash ECU firmware partially or entirely",
+      "",
       TAMPERING,
       Arrays.asList(RESPONSE_WAIT_TIME.withDefault(25)),
       Collections.singletonList(UDS_DISCOVER_SERVICES.id()), 44)),
@@ -149,7 +136,7 @@ public enum TestPoints {
   VARY_DLC(new TestPoint(
       "vary-dlc",
       "CAN Frame Underflow Overflow Attack",
-      "It checks whether current connected CAN Bus can handle invalid format CAN data packet",
+      "",
       OTHER,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25)),
@@ -158,9 +145,7 @@ public enum TestPoints {
   WRITE_DATA_BY_IDENTIFIER(new TestPoint(
       "write-data-by-identifier",
       "Modify ECU Data Attempt",
-      "Based on the found services in step \"ECU Scan\", it checks " +
-          "whether there are security vulnerabilities of each individual ECU " +
-          "can be invoked successfully to modify ECU configurations or settings contents",
+      "",
       TAMPERING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25),
@@ -170,8 +155,7 @@ public enum TestPoints {
   WRITE_MEMORY_ADDRESS(new TestPoint(
       "write-memory-address",
       "Modify ECU Memory Attempt",
-      "TBased on the found services in step \"ECU Scan\", " +
-          "it checks whether we can leverage those services to modify ECU firmware itself",
+      "",
       TAMPERING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(30)),
@@ -180,7 +164,7 @@ public enum TestPoints {
   READ_MEMORY_ADDRESS(new TestPoint(
       "read-memory-address",
       "Dump ECU Memory",
-      "It checks whether we can read ECU firmware partially or entirely",
+      "",
       REVERSING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(55),
@@ -192,7 +176,7 @@ public enum TestPoints {
   MANIPULATE_COMMUNICATION(new TestPoint(
       "ecu-communication-control",
       "Manipulate ECU Communication",
-      "It checks whether we can enable or disable communication of an ECU",
+      "",
       REVERSING,
       Arrays.asList(
           RESPONSE_WAIT_TIME.withDefault(25),
