@@ -1,6 +1,6 @@
-USE AT YOUR OWN RISK!
+# USE AT YOUR OWN RISK!
 READ CAREFULLY! 
-This SDk is not responsible for any lost, damages or issues that may occur.
+This repository contains as-is, and not responsible for any harm, lost, damages or issues that may occur.
 
 ## Visual Threat SDK
 
