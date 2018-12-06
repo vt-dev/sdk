@@ -1,3 +1,7 @@
+USE AT YOUR OWN RISK!
+READ CAREFULLY! 
+This SDk is not responsible for any lost, damages or issues that may occur.
+
 ## Visual Threat SDK
 
 It contains two versions of the same SDK. One for Java, and one for Python (2.7.x and 3.4+).
