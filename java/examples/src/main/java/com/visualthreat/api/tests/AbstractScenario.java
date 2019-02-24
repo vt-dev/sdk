@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ abstract public class AbstractScenario {
 
   @Getter
   protected final TestPoints testPoints;
+  private static final int REQUEST_TIMEOUT_INTERVAL = 5;
 
   public static final byte[] ENTER_PROG_SESSION =
       new byte[]{0x02, 0x10, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -260,5 +262,51 @@ abstract public class AbstractScenario {
         .data(sessionData)
         .waitTime(getResponseWaitTime(testPoints))
         .build();
+  }
+
+  public boolean isXcpRequestSendingSuccess(Collection<Request> requests,CANResponseFilter filter,
+      Integer requestId, Set<Integer> responseIds,
+      byte[] payload, boolean checkSendingOnly){
+    boolean connectSuccess = false;
+    long sendingTime = System.currentTimeMillis() / 1000;
+    while(!connectSuccess && (System.currentTimeMillis() / 1000 - sendingTime < REQUEST_TIMEOUT_INTERVAL)){
+      requests.add(createRequest(requestId, payload));
+      // send traffic
+      final Iterator<Response> responses = cloud.sendCANFrames(requests, filter);
+      // analyze logs
+      while (responses.hasNext()){
+        final Response response = responses.next();
+        logRequestFrame(response.getRequest());
+        final Iterator<CANFrame> frames = response.getResponses();
+        while(frames.hasNext()){
+          final CANFrame frame = frames.next();
+          if(responseIds.contains(frame.getId())){
+            if(checkSendingOnly){
+              connectSuccess = true;
+              break;
+            }else {
+              byte[] data = frame.getData();
+              // Check whether the XCP Service is implemented or not
+              if((data[0] & 0xFF) == 0xFF
+                  ||((data[0] & 0xFF) == 0xFE && (data[1] & 0xFF) != 0x20)){
+                connectSuccess = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    return connectSuccess;
+  }
+
+  protected Request createRequest(int requestId, byte[] hackRPM) {
+    Request request = null;
+    request = Request.Builder.newBuilder()
+        .id(requestId)
+        .data(hackRPM)
+        .waitTime(getResponseWaitTime(testPoints))
+        .build();
+    return request;
   }
 }

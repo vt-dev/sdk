@@ -1,13 +1,5 @@
 package com.visualthreat.api.tests.common;
 
-import static java.lang.reflect.Modifier.isStatic;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 public class TestParameters {
   public static final TestParameter<Boolean> ERASE_MEMORY_ONLY =
       new TestParameter<>(
@@ -50,6 +42,16 @@ public class TestParameters {
       new TestParameter<>(
           "udi",
           "Whether to use service ids discovered by previous test",
+          Boolean.class, false);
+  public static final TestParameter<TestConst.DiagnosticSession> ENTER_SESSION =
+      new TestParameter<>(
+          "enter_session",
+          "Enter Session",
+          TestConst.DiagnosticSession.class, TestConst.DiagnosticSession.PROGRAMMING);
+  public static final TestParameter<Boolean> EXTENSIVE_EXECUTION_MODE =
+      new TestParameter<>(
+          "ext",
+          "Extensive scanning all possible vulnerabilities of ECUs",
           Boolean.class, false);
   public static final TestParameter<Boolean> DUMP_READ_MEMORY =
       new TestParameter<>(
