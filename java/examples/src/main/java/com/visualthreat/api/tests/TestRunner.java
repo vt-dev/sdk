@@ -150,6 +150,39 @@ public class TestRunner {
 
       case WRITE_MEMORY_ADDRESS:
         return new WriteMemoryAddress(cloud, testPoint);
+
+      case GMLAN_READ_DATA_BY_IDENTIFIER:
+        return new GMLANReadDataByIdentifier(cloud, testPoint);
+
+      case GMLAN_READ_FAILURE_RECORD:
+        return new GMLANReadFailureRecord(cloud, testPoint);
+
+      case GMLAN_WRITE_IDENTIFIER:
+        return new GMLANWriteIdentifier(cloud, testPoint);
+
+      case GMLAN_DEVICE_CONTROL:
+        return new GMLANDeviceControl(cloud, testPoint);
+
+      case REQUEST_UPLOAD:
+        return new RequestUploadTest(cloud, testPoint);
+
+      case XCP_DISCOVER_IDS:
+        return new XCPIdsDiscovery(cloud, testPoint);
+
+      case MANIPULATE_COMMUNICATION:
+        return new ManipulateCommunication(cloud, testPoint);
+
+      case IO_CONTROL_BY_IDENTIFIER:
+        return new IOControlByIdentifier(cloud, testPoint);
+
+      case XCP_MODIFY_MEMORY:
+        return new XCPModifyMemory(cloud, testPoint);
+      case XCP_DISCOVER_SERVICES:
+        return new XCPServicesDiscovery(cloud, testPoint);
+      case XCP_SECURITY_ACCESS:
+        return new XCPSecurityAccess(cloud, testPoint);
+      case LINK_CONTROL:
+        return new LinkControl(cloud, testPoint);
     }
 
     return null;
