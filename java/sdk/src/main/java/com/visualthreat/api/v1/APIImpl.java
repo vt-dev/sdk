@@ -47,6 +47,7 @@ public class APIImpl implements API {
     endpoints.put("01", "visualthreat.net");
     endpoints.put("02", "us.visualthreat.net");
     endpoints.put("05", "edu.visualthreat.net");
+    endpoints.put("e0", "vt.test");
   }}
 
   private String hostname;
