@@ -38,16 +38,25 @@ public class APIImpl implements API {
   private static final String CONNECT_TO = "/public/notify/device/";
   private static final int MAX_MESSAGE_SIZE = 2 * 1024 * 1024;
 
-  private static final int PORT = 9000;
+  private static final int PORT = 443;
   private static final int PREFIX_LEN = 2;
   private static final int CORRECT_LEN = 38;
   private static final String DEFAULT = "01";
   private static final Map<String, String> endpoints = new HashMap<>();
-  static {{
-    endpoints.put("01", "visualthreat.net");
-    endpoints.put("02", "us.visualthreat.net");
-    endpoints.put("05", "edu.visualthreat.net");
-  }}
+
+  static {
+    {
+      endpoints.put("01", "visualthreat.net");
+      endpoints.put("02", "us.visualthreat.net");
+      endpoints.put("03", "apollo.visualthreat.net");
+      // remove endpoints below in public build
+      endpoints.put("04", "pilot.visualthreat.net");
+      endpoints.put("05", "edu.visualthreat.net");
+      endpoints.put("e0", "vt.dev");
+      endpoints.put("e1", "vt.devlprs.com");
+      endpoints.put("f0", "staging.visualthreat.net");
+    }
+  }
 
   private String hostname;
 
@@ -56,11 +65,15 @@ public class APIImpl implements API {
   }
 
   private void initHostname(final String apiKey) {
+    hostname = getHostName(apiKey);
+  }
+
+  public String getHostName(final String apiKey) {
     final String prefix = apiKey.length() == CORRECT_LEN ?
         apiKey.substring(0, PREFIX_LEN).toLowerCase() :
         DEFAULT;
 
-    hostname = endpoints.getOrDefault(prefix, endpoints.get(DEFAULT));
+    return endpoints.getOrDefault(prefix, endpoints.get(DEFAULT));
   }
 
   @Override

@@ -6,14 +6,9 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @Slf4j
 public class LinkControl extends AbstractScenario {
@@ -35,14 +30,14 @@ public class LinkControl extends AbstractScenario {
     final CANResponseFilter filter = CANResponseFilter.filterIds(MIN_ID, MAX_ID);
 
     for (Integer id : ecuIds.keySet()) {
-      for(DiagnosticSession session : sessionList){
-        sendLinkControlTraffic(id, session,filter);
+      for (DiagnosticSession session : sessionList) {
+        sendLinkControlTraffic(id, session, filter);
       }
     }
   }
 
   private void sendLinkControlTraffic(
-      Integer requestId, DiagnosticSession session,CANResponseFilter filter) {
+      Integer requestId, DiagnosticSession session, CANResponseFilter filter) {
 
     final Collection<Request> requests = new ArrayList<>();
     requests.add(this.enterSession(requestId, session));

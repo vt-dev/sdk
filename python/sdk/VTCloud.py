@@ -8,8 +8,8 @@ from sdk.data.Messages import CANFinal
 from sdk.data.Messages import CANFrames
 from sdk.data.Messages import CANRequest, Sniff
 from sdk.data.Query import Query
-from sdk.data.Request import Request
 from sdk.data.SniffQuery import SniffQuery
+from sdk.exceptions.APIException import APIException
 
 
 def remove_empty_entries(elements):
@@ -40,6 +40,8 @@ class VTCloud(object):
 
     __MAX_REQUESTS = 100
 
+    __closed = False
+
     def __init__(self, device, token, api_host, api_port, cert_path):
         """
         :param Device device:
@@ -62,6 +64,8 @@ class VTCloud(object):
         :param CANResponseFilter can_response_filter: filter for response CAN frames
         :return iterator for CANFrame request-responses tuples, 'responses' is also an iterator
         """
+        if self.__closed:
+            raise APIException('Can\'t send frames to closed Cloud connection')
         batches = [Query(reqs, can_response_filter) for reqs in _batches(requests, self.__MAX_REQUESTS)]
         return itertools.chain.from_iterable((self.send_can_query(q) for q in batches))
 
@@ -71,6 +75,8 @@ class VTCloud(object):
         :param Query query: Query with requests and filters
         :return iterator for CANFrame request-responses tuples, 'responses' is also an iterator
         """
+        if self.__closed:
+            raise APIException('Can\'t send CAN Query to closed Cloud connection')
         self.__id += 1
         request = CANRequest(self.__id, query)
         q = CANResponsesIterator()
@@ -85,6 +91,8 @@ class VTCloud(object):
         :param int interval: time limit
         :param CANResponseFilter can_response_filter: filter for response CAN frames
         """
+        if self.__closed:
+            raise APIException('Can\'t sniff frames from closed Cloud connection')
         return self.sniff_by_query(SniffQuery(interval, can_response_filter))
 
     def sniff_by_query(self, query):
@@ -92,6 +100,8 @@ class VTCloud(object):
         Get data from CAN bus
         :param SniffQuery query: filter for response CAN frames
         """
+        if self.__closed:
+            raise APIException('Can\'t sniff frames from closed Cloud connection')
         self.__id += 1
         request = Sniff(self.__id, query)
         q = CANResponsesIterator()
@@ -104,6 +114,7 @@ class VTCloud(object):
         Close connection to cloud
         :return: nothing
         """
+        self.__closed = True
         self.__client.close()
 
     def __response_handler(self, response):

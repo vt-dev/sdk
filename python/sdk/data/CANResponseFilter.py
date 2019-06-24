@@ -1,4 +1,3 @@
-from sdk.data.ByteArrayFilter import ByteArrayFilter
 from sdk.data.Mappable import Mappable
 
 

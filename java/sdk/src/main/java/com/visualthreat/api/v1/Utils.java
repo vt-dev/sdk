@@ -2,18 +2,13 @@ package com.visualthreat.api.v1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
 @Slf4j
 public final class Utils {
-  public static final ObjectMapper json = new ObjectMapper()
-      .findAndRegisterModules()
-      .registerModule(new ParameterNamesModule())
-      .registerModule(new Jdk8Module());
+  public static final ObjectMapper json = new ObjectMapper();
 
   static {
     json.findAndRegisterModules();

@@ -8,4 +8,4 @@ class APIException(Exception):
         self.text = text
 
     def __str__(self):
-        return 'APIAuthException(' + self.text + ')'
+        return 'APIException(' + self.text + ')'

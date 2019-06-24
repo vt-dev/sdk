@@ -7,8 +7,6 @@ import com.visualthreat.api.v1.APIImpl;
 import com.visualthreat.api.v1.Token;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Interface for 3rd party API.

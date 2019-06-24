@@ -6,14 +6,10 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.*;
 
 @Slf4j
 public class SimulateReprogramming extends AbstractScenario {
@@ -29,11 +25,11 @@ public class SimulateReprogramming extends AbstractScenario {
     // Get the ecu id and corresponding response id
     ecuIDs = readInPredefinedIDOrServices("ecuIDs");
     final CANResponseFilter filter = CANResponseFilter.filterIds(MIN_ID, MAX_ID);
-    for(Integer requestId : ecuIDs.keySet()) {
+    for (Integer requestId : ecuIDs.keySet()) {
       try {
         log.info(String.format("Starts testing ECU=0x%X", requestId));
         sendSimulatedReprogrammingTraffic(requestId, filter);
-      } catch(IOException e) {
+      } catch (IOException e) {
         log.error("SimulateReprogrammingTest failed", e);
       }
     }
@@ -48,7 +44,7 @@ public class SimulateReprogramming extends AbstractScenario {
       // send request download
       Collection<Request> requests = new ArrayList<>();
       requests.add(enterSession(requestId, DiagnosticSession.PROGRAMMING));
-      for(int tries = 0; tries < NUM_OF_DOWNLOAD_ATTEMPTS; tries++) {
+      for (int tries = 0; tries < NUM_OF_DOWNLOAD_ATTEMPTS; tries++) {
         byte addr1 = (byte) (randomAddress >> 16 & 0xFF);
         byte addr2 = (byte) (randomAddress >> 8 & 0xFF);
         byte addr3 = (byte) (randomAddress & 0xFF);
@@ -92,7 +88,7 @@ public class SimulateReprogramming extends AbstractScenario {
               .build()
           );
           index++;
-        } while(((index-1) * 7) < dataSize);
+        } while (((index - 1) * 7) < dataSize);
 
         byte[] requestTransferExit = new byte[]{0x1, 0x37, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
         requests.add(Request.Builder.newBuilder()
@@ -109,8 +105,8 @@ public class SimulateReprogramming extends AbstractScenario {
             .waitTime(getResponseWaitTime(testPoints))
             .build()
         );
-        routineControl[3] = (byte)(rn.nextInt(256) & 0xFF);
-        routineControl[4] = (byte)(rn.nextInt(64) & 0xFF);
+        routineControl[3] = (byte) (rn.nextInt(256) & 0xFF);
+        routineControl[4] = (byte) (rn.nextInt(64) & 0xFF);
         requests.add(Request.Builder.newBuilder()
             .id(requestId)
             .data(routineControl)
@@ -123,7 +119,7 @@ public class SimulateReprogramming extends AbstractScenario {
       final Iterator<Response> responses = cloud.sendCANFrames(requests, filter);
       // logs
       exportLogToConsole(responses);
-    } catch (Exception e){
+    } catch (Exception e) {
       log.error("Sending SimulateReprogramming failed!");
     }
   }

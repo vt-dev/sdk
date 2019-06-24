@@ -1,17 +1,16 @@
-from _ssl import CERT_REQUIRED
-from _ssl import CERT_NONE
-import socket
-
-import sdk.util as util
 import errno
+import socket
+from _ssl import CERT_NONE
+from _ssl import CERT_REQUIRED
 from threading import Thread
-
 from ws4py.client.threadedclient import WebSocketClient
 
+import sdk.util as util
+
 if util.P3:
-    from queue import Queue
+    pass
 else:
-    from Queue import Queue
+    pass
 
 try:
     from OpenSSL.SSL import Error as pyOpenSSLError

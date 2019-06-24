@@ -1,8 +1,8 @@
 package com.visualthreat.api.tests.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class TestParameter<T> {
     this.description = description;
     this.classTag = classTag;
     this.type = classTag.getSimpleName();
-    if(classTag.isEnum()) {
+    if (classTag.isEnum()) {
       this.values = Arrays.asList(classTag.getEnumConstants());
     }
 
@@ -60,22 +60,22 @@ public class TestParameter<T> {
   }
 
   public boolean equals(Object o) {
-    if(o == this) {
+    if (o == this) {
       return true;
-    } else if(!(o instanceof TestParameter)) {
+    } else if (!(o instanceof TestParameter)) {
       return false;
     } else {
-      TestParameter other = (TestParameter)o;
-      if(!other.canEqual(this)) {
+      TestParameter other = (TestParameter) o;
+      if (!other.canEqual(this)) {
         return false;
       } else {
         String this$name = this.getName();
         String other$name = other.getName();
-        if(this$name == null) {
-          if(other$name != null) {
+        if (this$name == null) {
+          if (other$name != null) {
             return false;
           }
-        } else if(!this$name.equals(other$name)) {
+        } else if (!this$name.equals(other$name)) {
           return false;
         }
 
@@ -91,7 +91,7 @@ public class TestParameter<T> {
   public int hashCode() {
     byte result = 1;
     String $name = this.getName();
-    int result1 = result * 59 + ($name == null?43:$name.hashCode());
+    int result1 = result * 59 + ($name == null ? 43 : $name.hashCode());
     return result1;
   }
 }

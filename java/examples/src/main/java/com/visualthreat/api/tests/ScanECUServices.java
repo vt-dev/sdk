@@ -4,17 +4,13 @@ import com.visualthreat.api.VTCloud;
 import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
-import com.visualthreat.api.tests.common.ECUServices;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.*;
+
 @Slf4j
-public class ScanECUServices extends AbstractScenario{
+public class ScanECUServices extends AbstractScenario {
 
   private Map<Integer, Set<Integer>> ecuIDs;
   private static final byte[] ECU_PAYLOAD = {0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -24,7 +20,7 @@ public class ScanECUServices extends AbstractScenario{
   }
 
   @Override
-  public void run(){
+  public void run() {
     try {
       // Get the ecu id and corresponding response id
       ecuIDs = readInPredefinedIDOrServices("ecuIDs");

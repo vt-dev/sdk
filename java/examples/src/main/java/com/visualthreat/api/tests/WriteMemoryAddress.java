@@ -6,14 +6,9 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @Slf4j
 public class WriteMemoryAddress extends AbstractScenario {
@@ -25,7 +20,9 @@ public class WriteMemoryAddress extends AbstractScenario {
     THREE_BYTES,
     FOUR_BYTES
   }
+
   private static Random rand = new Random();
+
   public WriteMemoryAddress(VTCloud cloud, TestPoints testPoint) {
     super(cloud, testPoint);
   }

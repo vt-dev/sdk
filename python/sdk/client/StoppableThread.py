@@ -3,13 +3,13 @@ from time import sleep, time
 
 import sdk.util as util
 from sdk.client.WSClient import WSClient
-from sdk.data.Messages import Message, Ping
 from sdk.data.Messages import CANFinal
+from sdk.data.Messages import Message, Ping
 
 if util.P3:
-    from queue import Queue, Empty
+    pass
 else:
-    from Queue import Queue, Empty
+    from Queue import Empty
 
 
 class StoppableThread(threading.Thread):

@@ -6,12 +6,9 @@ import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @Slf4j
 public class DetectResponseRate extends AbstractScenario {
@@ -28,7 +25,7 @@ public class DetectResponseRate extends AbstractScenario {
     // Get the ecu id and corresponding response id
     ecuIDs = readInPredefinedIDOrServices("ecuIDs");
     final CANResponseFilter filter = CANResponseFilter.filterIds(MIN_ID, MAX_ID);
-    for(int requestId : ecuIDs.keySet()){
+    for (int requestId : ecuIDs.keySet()) {
       for (Integer respId : ecuIDs.get(requestId)) {
         testDelay(requestId, respId, getResponseWaitTime(testPoints), filter);
       }
@@ -58,11 +55,11 @@ public class DetectResponseRate extends AbstractScenario {
     int fastFactor = 1;
     double curDelay = sendTraffic(requestId, responseId, delay, filter);
     while (curDelay < 1 - 0.02) { //0.02 is allowed error
-      if(delay >= 1000) {
+      if (delay >= 1000) {
         delay += 1000 * fastFactor;
-      }else if(delay >= 100) {
+      } else if (delay >= 100) {
         delay += 100 * fastFactor;
-      }else if(delay >= 50) {
+      } else if (delay >= 50) {
         delay += 50 * fastFactor;
       } else {
         delay += 2 * fastFactor;
@@ -71,7 +68,7 @@ public class DetectResponseRate extends AbstractScenario {
         break;
       }
       curDelay = sendTraffic(requestId, responseId, delay, filter);
-      if(curDelay < 0.02) {
+      if (curDelay < 0.02) {
         fastFactor = 3;
       } else {
         fastFactor = 1;
@@ -89,10 +86,10 @@ public class DetectResponseRate extends AbstractScenario {
       requestEntry = entry.getRequest();
       logRequestFrame(requestEntry);
       Iterator<CANFrame> responses = entry.getResponses();
-      while(responses.hasNext()){
+      while (responses.hasNext()) {
         CANFrame response = responses.next();
         logResponseFrame(response);
-        if(response.getId() == responseId){
+        if (response.getId() == responseId) {
           count++;
         }
       }

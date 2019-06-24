@@ -6,18 +6,15 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.*;
 
 @Slf4j
 public class ScanUDSServiceVulnerabilities extends AbstractScenario {
   private Map<Integer, Set<Integer>> ecuIDAndServicesIDs;
+
   public ScanUDSServiceVulnerabilities(VTCloud cloud, TestPoints testPoint) {
     super(cloud, testPoint);
   }
@@ -37,9 +34,9 @@ public class ScanUDSServiceVulnerabilities extends AbstractScenario {
     try {
       log.info("Start to send Scan UDSServiceVulnerabilities requests.\n");
       List<Byte> subFunctionBytes = new ArrayList<>();
-      subFunctionBytes.add((byte)0x0);
+      subFunctionBytes.add((byte) 0x0);
       sendTrafficForGivenGroupServices(requestId, filter, serviceIDs,
-            subFunctionBytes,DEFAULT_MIN_PAYLOAD_LENGTH,DEFAULT_MAX_PAYLOAD_LENGTH);
+          subFunctionBytes, DEFAULT_MIN_PAYLOAD_LENGTH, DEFAULT_MAX_PAYLOAD_LENGTH);
     } catch (InterruptedException ignored) {
       Thread.currentThread().interrupt();
     } catch (IOException ex) {
@@ -48,10 +45,10 @@ public class ScanUDSServiceVulnerabilities extends AbstractScenario {
   }
 
   private void sendTrafficForGivenGroupServices(Integer requestId,
-      CANResponseFilter filter, Set<Integer> serviceIDs,
-      List<Byte> subFunctionBytes,
-      int payLoadMinLength,
-      int payLoadMaxLength) throws IOException, InterruptedException {
+                                                CANResponseFilter filter, Set<Integer> serviceIDs,
+                                                List<Byte> subFunctionBytes,
+                                                int payLoadMinLength,
+                                                int payLoadMaxLength) throws IOException, InterruptedException {
     Collection<Request> requests = new ArrayList<>();
     requests.add(this.enterSession(requestId, DiagnosticSession.PROGRAMMING));
     for (int serviceID : serviceIDs) {

@@ -1,7 +1,7 @@
 import pytest
 
-from sdk.data.Entities import Device
 from sdk.VTCloud import _get_ws_url, remove_empty_entries
+from sdk.data.Entities import Device
 
 
 @pytest.mark.parametrize("inp,output", [

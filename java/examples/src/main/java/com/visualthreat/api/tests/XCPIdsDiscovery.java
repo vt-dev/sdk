@@ -6,13 +6,9 @@ import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 @Slf4j
@@ -25,7 +21,7 @@ public class XCPIdsDiscovery extends AbstractScenario {
       0x00, 0x00, 0x00};
   final Collection<String> ecuIDs = new HashSet<>();
 
-  public static HashMap<Integer, String[]> XCP_ERROR_CODES = new HashMap(){
+  public static HashMap<Integer, String[]> XCP_ERROR_CODES = new HashMap() {
     {
       put(0x00, new String[]{"ERR_CMD_SYNC", "Command processor synchronisation."});
       put(0x10, new String[]{"ERR_CMD_BUSY", "Command was not executed."});

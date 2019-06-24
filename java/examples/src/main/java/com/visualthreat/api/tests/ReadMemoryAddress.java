@@ -6,14 +6,10 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestParameters;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.*;
 
 @Slf4j
 public class ReadMemoryAddress extends AbstractScenario {
@@ -50,7 +46,7 @@ public class ReadMemoryAddress extends AbstractScenario {
 
   private void sendReadMemoryByAddressTraffic(int requestId, CANResponseFilter filter) throws IOException {
     for (long address = this.startAddress; address <= this.stopAddress;
-        address += ADDRESS_100M_HEX) {
+         address += ADDRESS_100M_HEX) {
       final Collection<Request> requests = new ArrayList<>();
       for (long i = address; i < (address + ADDRESS_2M); i += ADDRESS_16K) {
         createReadTraffic(requests, requestId, i, MAX_READABLE_LENGTH);

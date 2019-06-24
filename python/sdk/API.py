@@ -1,7 +1,7 @@
 import requests
 
-from sdk.data.Entities import Token, Device
 from sdk.VTCloud import VTCloud
+from sdk.data.Entities import Token, Device
 from sdk.exceptions.APIAuthException import APIAuthException
 
 
@@ -34,7 +34,13 @@ class API(object):
     __endpoints = {
         "01": "visualthreat.net",
         "02": "us.visualthreat.net",
-        "05": "edu.visualthreat.net"
+        "03": "apollo.visualthreat.net",
+        # remove endpoints below
+        "04": "pilot.visualthreat.net",
+        "05": "edu.visualthreat.net",
+        "e0": "vt.dev",
+        "e1": "vt.devlprs.com",
+        "f0": "staging.visualthreat.net"
     }
 
     def __init__(self, api_host='visualthreat.net', api_port=9001, cert_path=''):

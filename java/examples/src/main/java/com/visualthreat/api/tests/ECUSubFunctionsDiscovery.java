@@ -5,14 +5,9 @@ import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @Slf4j
 public class ECUSubFunctionsDiscovery extends AbstractScenario {
@@ -45,7 +40,7 @@ public class ECUSubFunctionsDiscovery extends AbstractScenario {
         final Collection<Request> requests = new ArrayList<>();
         byte[] curPayLoad = Arrays.copyOf(udsServiceQueryPayload, udsServiceQueryPayload.length);
         curPayLoad[0] = 0x04;
-        curPayLoad[1] = (byte)(serviceId & 0xFF);
+        curPayLoad[1] = (byte) (serviceId & 0xFF);
         for (int j = 0; j < 256; j++) {
           curPayLoad[2] = (byte) (j & 0xFF);
           for (int k = 0; k < 5; k++) {

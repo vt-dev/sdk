@@ -23,4 +23,3 @@ def test_string_as_mappable(string):
 def test_string_as_mappable_equality_fail():
     repr = StringAsMappable('lol')
     assert not repr == {}
-

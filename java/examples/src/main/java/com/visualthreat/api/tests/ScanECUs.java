@@ -1,13 +1,17 @@
 package com.visualthreat.api.tests;
 
 import com.visualthreat.api.VTCloud;
-import com.visualthreat.api.data.*;
+import com.visualthreat.api.data.CANFrame;
+import com.visualthreat.api.data.CANResponseFilter;
+import com.visualthreat.api.data.Request;
+import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestPoints;
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 
 @Slf4j
-public class ScanECUs extends AbstractScenario{
+public class ScanECUs extends AbstractScenario {
   private static final byte[] ECU_PAYLOAD = {0x02, 0x10, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
   private static final List<Byte> BYTE_ONE = Arrays.asList((byte) 0x50, (byte) 0x7f);
 

@@ -1,6 +1,4 @@
-# USE AT YOUR OWN RISK!
-READ CAREFULLY! 
-This repository contains as-is, and not responsible for any harm, lost, damages or issues that may occur.
+# Safe to remove. Outdated.
 
 ## Visual Threat SDK
 

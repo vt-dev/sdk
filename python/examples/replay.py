@@ -48,7 +48,7 @@ def replay(api_key, secret, device_id, log_name, wait_time, cert_path):
             if wait_time < 0:
                 delta = 30
                 if i < l - 1:
-                    delta = max(1, frames[i + 1].timestamp - frames[i].timestamp)
+                    delta = min(100, max(1, frames[i + 1].timestamp - frames[i].timestamp))
 
             requests.append(Request(frames[i], delta))
 
