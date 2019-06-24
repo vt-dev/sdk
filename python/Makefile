@@ -7,6 +7,6 @@ test:
 	py.test tests
 
 install:
-	python setup.py install --user
+	python setup.py install
 
 .PHONY: init test install

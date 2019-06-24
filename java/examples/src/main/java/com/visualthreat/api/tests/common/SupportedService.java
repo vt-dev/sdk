@@ -1,9 +1,9 @@
 package com.visualthreat.api.tests.common;
 
-import java.util.Arrays;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 @EqualsAndHashCode
 public class SupportedService implements Serializable {
@@ -22,10 +22,10 @@ public class SupportedService implements Serializable {
     if (subFunction != null && subFunction.length > 0) {
       StringBuilder sb = new StringBuilder();
       sb.append(" SubFunction=");
-      for(int i = 0; i < subFunction.length-1; i++){
+      for (int i = 0; i < subFunction.length - 1; i++) {
         sb.append(String.format("0x%X,", subFunction[i]));
       }
-      sb.append(String.format("0x%X", subFunction[subFunction.length-1]));
+      sb.append(String.format("0x%X", subFunction[subFunction.length - 1]));
       subFunctionStr = sb.toString();
     }
     return String.format("0x%X %s 0x%X 0x%X %s ServiceId=0x%X", ecuId,
@@ -33,7 +33,7 @@ public class SupportedService implements Serializable {
         ecuId, responseId, name, supportedService) + subFunctionStr;
   }
 
-  public SupportedService(){
+  public SupportedService() {
 
   }
 
@@ -44,7 +44,7 @@ public class SupportedService implements Serializable {
     this.ecuId = in.ecuId;
     this.responseId = in.responseId;
     this.supportedService = in.supportedService;
-    if(in.subFunction != null){
+    if (in.subFunction != null) {
       this.subFunction = Arrays.copyOf(in.subFunction, in.subFunction.length);
     }
   }

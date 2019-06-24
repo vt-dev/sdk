@@ -1,6 +1,5 @@
 package com.visualthreat.api.tests.common;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import java.beans.ConstructorProperties;
 import java.util.List;
 

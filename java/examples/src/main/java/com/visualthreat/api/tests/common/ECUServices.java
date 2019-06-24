@@ -1,9 +1,10 @@
 package com.visualthreat.api.tests.common;
 
+import lombok.Value;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.Value;
 
 @Value
 public class ECUServices {

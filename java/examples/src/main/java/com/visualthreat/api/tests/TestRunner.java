@@ -16,6 +16,7 @@ public class TestRunner {
   private static final Options options = new Options();
   private static String sniffOutputPath = "";
   private static int sniffLength = 0;
+
   static {
     options.addOption(Arguments.DEVICE.type, "device", true, "Device ID");
     options.addOption(Arguments.KEY.type, "key", true, "API key");
@@ -30,12 +31,12 @@ public class TestRunner {
     // parsing CLI arguments
     final CommandLineParser parser = new DefaultParser();
     final CommandLine cmd = parser.parse(options, args);
-    if(cmd.hasOption("h")){
+    if (cmd.hasOption("h")) {
       showUsage();
       System.exit(0);
     }
-    if(cmd.hasOption(Arguments.SNIFF_OUTPUT_PATH.type)
-        && cmd.hasOption(Arguments.SNIFF_LENGTH.type)){
+    if (cmd.hasOption(Arguments.SNIFF_OUTPUT_PATH.type)
+        && cmd.hasOption(Arguments.SNIFF_LENGTH.type)) {
       sniffOutputPath = cmd.getOptionValue(Arguments.SNIFF_OUTPUT_PATH.type);
       sniffLength = Integer.parseInt(cmd.getOptionValue(Arguments.SNIFF_LENGTH.type));
     }
@@ -61,10 +62,10 @@ public class TestRunner {
     System.exit(1);
   }
 
-  private static String getSupportTestPointName(){
+  private static String getSupportTestPointName() {
     StringBuilder sb = new StringBuilder();
     sb.append("Supported TestPoint Name:\n");
-    for(TestPoints testPoints: TestPoints.values()){
+    for (TestPoints testPoints : TestPoints.values()) {
       sb.append(testPoints.getTestPoint().getId()).append("\n");
     }
     return sb.toString();
@@ -95,7 +96,7 @@ public class TestRunner {
     }
   }
 
-  private static AbstractScenario runTestCase(VTCloud cloud, String testPointId){
+  private static AbstractScenario runTestCase(VTCloud cloud, String testPointId) {
     TestPoints testPoint = TestPoints.getEnum(testPointId);
 
     if (testPoint == null) {

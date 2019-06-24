@@ -27,7 +27,6 @@ def reference_map(id, data, timestamp):
     (4, [0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], 'AgAAAAAAAAA='),
     (5, [0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBA, 0xBA], '3q2+796turo=')])
 def test_data_serialization_CANFrame(id, bytes, data):
-
     bytes_as_array = None
     if isinstance(bytes, str):
         bytes_as_array = bytearray(bytes, 'utf8')
@@ -47,7 +46,6 @@ def test_data_serialization_CANFrame(id, bytes, data):
     (4, [0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], 'AgAAAAAAAAA='),
     (5, [0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBA, 0xBA], '3q2+796turo=')])
 def test_extract_CANFrame_from_obj(id, in_bytes, data):
-
     bytes_as_array = None
     if isinstance(in_bytes, str):
         bytes_as_array = bytearray(in_bytes, 'utf8')
@@ -68,7 +66,6 @@ def test_extract_CANFrame_from_obj(id, in_bytes, data):
     [0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBA, 0xBA]
 ])
 def test_dummy_data_conversion(data):
-
     bytes_as_array = None
     if isinstance(data, str):
         bytes_as_array = bytearray(data, 'utf8')

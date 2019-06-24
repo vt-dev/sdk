@@ -1,9 +1,9 @@
 package com.visualthreat.api.data;
 
-import java.util.Optional;
-
 import lombok.*;
 import lombok.experimental.Accessors;
+
+import java.util.Optional;
 
 /**
  * Data class.
@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-@Value
+@Getter
 public final class ByteArrayFilter {
   private final Optional<Byte> byte0;
   private final Optional<Byte> byte1;

@@ -1,6 +1,5 @@
 from sdk.data.CANResponseFilter import CANResponseFilter
 from sdk.data.Mappable import Mappable
-from sdk.data.Request import Request
 
 
 class Query(Mappable):

@@ -2,16 +2,16 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sdk</artifactId>
-    <version>1.4.3</version>
+  <artifactId>sdk</artifactId>
+  <version>1.4.5</version>
 
-    <parent>
-        <artifactId>api</artifactId>
-        <groupId>com.visualthreat</groupId>
-        <version>1.4.3</version>
-    </parent>
+  <parent>
+    <artifactId>api</artifactId>
+    <groupId>com.visualthreat</groupId>
+    <version>1.4.5</version>
+  </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

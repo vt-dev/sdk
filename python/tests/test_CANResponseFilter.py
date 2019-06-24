@@ -44,4 +44,3 @@ def test_can_response_filter_min_max_serialization():
 def test_can_response_filter_equatily_fail():
     can_response_filter = CANResponseFilter({2}, {get_byte_array_filter()}, -1, -1)
     assert not can_response_filter == {}
-

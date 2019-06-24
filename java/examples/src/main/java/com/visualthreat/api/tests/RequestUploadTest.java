@@ -6,16 +6,10 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.*;
 
 
 @Slf4j
@@ -41,8 +35,8 @@ public class RequestUploadTest extends AbstractScenario {
     final CANResponseFilter filter = CANResponseFilter.filterIds(MIN_ID, MAX_ID);
     for (Integer id : ecuIds.keySet()) {
       try {
-        for(DiagnosticSession session : sessionList){
-          sendRequestUploadTraffic(id, session,filter);
+        for (DiagnosticSession session : sessionList) {
+          sendRequestUploadTraffic(id, session, filter);
         }
       } catch (final IOException ex) {
         log.error("ECU Dump Memory Two failed", ex);
@@ -50,13 +44,13 @@ public class RequestUploadTest extends AbstractScenario {
     }
   }
 
-  private void sendRequestUploadTraffic(int requestId, DiagnosticSession session,CANResponseFilter filter) throws IOException {
+  private void sendRequestUploadTraffic(int requestId, DiagnosticSession session, CANResponseFilter filter) throws IOException {
     log.info(String.format("Starts testing ECU=0x%X", requestId));
     final Collection<Request> requests = new ArrayList<>();
     requests.add(this.enterSession(requestId, session));
     List<Request> entries = null;
     for (long address = (long) 0x0L; address <= (long) ADDRESS_FULL; address += ADDRESS_100M_HEX) {
-          /* For first 2M, send ReadMemoryByAddress every 16k */
+      /* For first 2M, send ReadMemoryByAddress every 16k */
       for (long i = address; i < (address + ADDRESS_2M); i += ADDRESS_16K) {
         entries = createTraffic(requestId, i, DOWNLOAD_SIZE);
         requests.addAll(entries);

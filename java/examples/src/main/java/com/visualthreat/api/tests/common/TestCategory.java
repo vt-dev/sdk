@@ -21,9 +21,9 @@ public enum TestCategory {
     TestCategory[] var1 = values();
     int var2 = var1.length;
 
-    for(int var3 = 0; var3 < var2; ++var3) {
+    for (int var3 = 0; var3 < var2; ++var3) {
       TestCategory category = var1[var3];
-      if(category.value.equalsIgnoreCase(value)) {
+      if (category.value.equalsIgnoreCase(value)) {
         return category;
       }
     }

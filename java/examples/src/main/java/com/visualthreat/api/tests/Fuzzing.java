@@ -6,19 +6,15 @@ import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.security.SecureRandom;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @Slf4j
-public final class Fuzzing extends AbstractScenario{
+public final class Fuzzing extends AbstractScenario {
   private static final Random rnd = new SecureRandom();
   private static final List<CANFrame> frames = new LinkedList<>();
   private static final long WAIT_TIME = 30;
@@ -29,6 +25,7 @@ public final class Fuzzing extends AbstractScenario{
   public Fuzzing(VTCloud cloud, TestPoints testPoints) {
     super(cloud, testPoints);
   }
+
   /**
    * Generating random Request, with random data, data length and random id.
    */

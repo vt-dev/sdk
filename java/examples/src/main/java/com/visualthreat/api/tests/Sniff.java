@@ -4,11 +4,12 @@ import com.visualthreat.api.VTCloud;
 import com.visualthreat.api.data.CANFrame;
 import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.tests.common.TestPoints;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Iterator;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Sniff extends AbstractScenario {
@@ -18,11 +19,11 @@ public class Sniff extends AbstractScenario {
   private int sniffLength = 0;
 
   public Sniff(VTCloud cloud,
-      TestPoints testPoints) {
+               TestPoints testPoints) {
     super(cloud, testPoints);
   }
 
-  public Sniff(VTCloud cloud, TestPoints testPoints, String outputPath, int sniffLength){
+  public Sniff(VTCloud cloud, TestPoints testPoints, String outputPath, int sniffLength) {
     super(cloud, testPoints);
     this.outputPath = outputPath;
     this.sniffLength = sniffLength;
@@ -34,12 +35,12 @@ public class Sniff extends AbstractScenario {
     saveSniffResult(frames);
   }
 
-  private void saveSniffResult(Iterator<CANFrame> frames){
+  private void saveSniffResult(Iterator<CANFrame> frames) {
     long time = System.currentTimeMillis();
     File output = new File(outputPath + "/sniffOutput.traffic");
     try {
       PrintWriter printWriter = new PrintWriter(output);
-      while(frames.hasNext()){
+      while (frames.hasNext()) {
         final CANFrame frame = frames.next();
         printWriter.println(frame);
         logResponseFrame(frame);

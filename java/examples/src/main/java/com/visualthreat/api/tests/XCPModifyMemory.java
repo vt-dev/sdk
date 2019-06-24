@@ -1,22 +1,15 @@
 package com.visualthreat.api.tests;
 
 import com.visualthreat.api.VTCloud;
-import com.visualthreat.api.data.CANFrame;
 import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.*;
 
 @Slf4j
 public class XCPModifyMemory extends AbstractScenario {
@@ -39,8 +32,8 @@ public class XCPModifyMemory extends AbstractScenario {
     for (Integer id : ecuIds.keySet()) {
       log.info(String.format("Starts testing ECU=0x%X", id));
       try {
-        for(DiagnosticSession session : sessionList){
-          sendXCPClearMemoryTraffic(id, session,filter);
+        for (DiagnosticSession session : sessionList) {
+          sendXCPClearMemoryTraffic(id, session, filter);
         }
       } catch (final IOException ex) {
         log.error("XCP Modify Memory failed", ex);
@@ -49,21 +42,21 @@ public class XCPModifyMemory extends AbstractScenario {
   }
 
   private void sendXCPClearMemoryTraffic(
-      int requestId, DiagnosticSession session,CANResponseFilter filter) throws IOException {
+      int requestId, DiagnosticSession session, CANResponseFilter filter) throws IOException {
     final Collection<Request> requests = new ArrayList<>();
     requests.add(this.enterSession(requestId, session));
     // Modify memory with random clear ranges for 50 times
     for (int i = 0; i <= 50; i++) {
       // First need to check xcp connection ready or not
-      if(isXcpRequestSendingSuccess(requests, filter, requestId, ecuIds.get(requestId),
-          xcpConnectQueryPayload,true)){
+      if (isXcpRequestSendingSuccess(requests, filter, requestId, ecuIds.get(requestId),
+          xcpConnectQueryPayload, true)) {
         //Send Program Start packet before Program Clear
-        byte[] byteXCPProgramStart = {(byte)0xD2, 0, 0, 0, 0, 0, 0, 0};
+        byte[] byteXCPProgramStart = {(byte) 0xD2, 0, 0, 0, 0, 0, 0, 0};
         requests.add(createRequest(requestId, byteXCPProgramStart));
         // Send program clear memory packets
-        byte[] byteXCPClearMemory = {(byte)0xD1, 0, 0, 0, 0, 0, 0, 0};
+        byte[] byteXCPClearMemory = {(byte) 0xD1, 0, 0, 0, 0, 0, 0, 0};
         Random rn = new Random();
-        for(int j = 4; j < 8; j++){
+        for (int j = 4; j < 8; j++) {
           byteXCPClearMemory[j] = (byte) (rn.nextInt(256) & 0xFF);
         }
         requests.add(createRequest(requestId, byteXCPClearMemory));

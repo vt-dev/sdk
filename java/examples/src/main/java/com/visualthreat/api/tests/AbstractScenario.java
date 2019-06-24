@@ -10,24 +10,16 @@ import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestParameter;
 import com.visualthreat.api.tests.common.TestParameters;
 import com.visualthreat.api.tests.common.TestPoints;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -55,10 +47,10 @@ abstract public class AbstractScenario {
 
   abstract public void run();
 
-  protected int getResponseWaitTime(TestPoints testPoints){
+  protected int getResponseWaitTime(TestPoints testPoints) {
     List<TestParameter> testParameters = testPoints.getTestPoint().getParams();
-    for(TestParameter testParameter : testParameters){
-      if(testParameter.equals(TestParameters.RESPONSE_WAIT_TIME)){
+    for (TestParameter testParameter : testParameters) {
+      if (testParameter.equals(TestParameters.RESPONSE_WAIT_TIME)) {
         return (int) testParameter.getDefaultValue();
       }
     }
@@ -67,31 +59,32 @@ abstract public class AbstractScenario {
 
 
   /**
-   *  Read in the ecu id and ecu services from resource folder
+   * Read in the ecu id and ecu services from resource folder
+   *
    * @param fileName
    * @return
    */
-  protected Map<Integer, Set<Integer>> readInPredefinedIDOrServices(String fileName){
-    InputStream in = getClass().getResourceAsStream("/" +fileName);
+  protected Map<Integer, Set<Integer>> readInPredefinedIDOrServices(String fileName) {
+    InputStream in = getClass().getResourceAsStream("/" + fileName);
     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
     Map<Integer, Set<Integer>> map = new HashMap<>();
     String line;
     try {
       while ((line = reader.readLine()) != null) {
-          String[] idAndRspIds = line.split(Pattern.quote(":"));
-          String[] ids = idAndRspIds[0].split(Pattern.quote("x"));
-          String[] rspIDs = idAndRspIds[1].split(Pattern.quote("x"));
-          int requestID = Integer.parseInt(ids[1], 16);
-          int responseID = Integer.parseInt(rspIDs[1], 16);
-          if(map.containsKey(requestID)){
-            Set<Integer> rspSet = map.get(requestID);
-            rspSet.add(responseID);
-            map.put(requestID, rspSet);
-          }else {
-            Set<Integer> set = new HashSet<>();
-            set.add(responseID);
-            map.put(requestID, set);
-          }
+        String[] idAndRspIds = line.split(Pattern.quote(":"));
+        String[] ids = idAndRspIds[0].split(Pattern.quote("x"));
+        String[] rspIDs = idAndRspIds[1].split(Pattern.quote("x"));
+        int requestID = Integer.parseInt(ids[1], 16);
+        int responseID = Integer.parseInt(rspIDs[1], 16);
+        if (map.containsKey(requestID)) {
+          Set<Integer> rspSet = map.get(requestID);
+          rspSet.add(responseID);
+          map.put(requestID, rspSet);
+        } else {
+          Set<Integer> set = new HashSet<>();
+          set.add(responseID);
+          map.put(requestID, set);
+        }
       }
     } catch (IOException e) {
       log.error("Can't load ECU ids for ScanECUServices!");
@@ -102,6 +95,7 @@ abstract public class AbstractScenario {
   protected static void logRequestFrame(final CANFrame frame) {
     log.info("===>{}", frame);
   }
+
   protected static void logResponseFrame(final CANFrame frame) {
     log.info("<==={}", frame);
   }
@@ -115,7 +109,7 @@ abstract public class AbstractScenario {
       requestEntry = entry.getRequest();
       logRequestFrame(requestEntry);
       Iterator<CANFrame> responses = entry.getResponses();
-      while(responses.hasNext()){
+      while (responses.hasNext()) {
         CANFrame response = responses.next();
         logResponseFrame(response);
       }
@@ -163,32 +157,32 @@ abstract public class AbstractScenario {
     final List<Request> requests = new ArrayList<>();
     Random rn = new Random();
 
-    for(int i = payLoadMinLength ; i < payLoadMaxLength; i++) {
+    for (int i = payLoadMinLength; i < payLoadMaxLength; i++) {
       int offset = 0;
-      byte[] curPayLoad = new byte[] {0,0,0,0,0,0,0,0};
+      byte[] curPayLoad = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
 
-      if(i>=8) {
+      if (i >= 8) {
         curPayLoad[0] = (byte) 0x10;
-        curPayLoad[0] = (byte) (curPayLoad[0] + (byte)((i >> 8) & 0x0F));
+        curPayLoad[0] = (byte) (curPayLoad[0] + (byte) ((i >> 8) & 0x0F));
         curPayLoad[1] = (byte) (i & 0xFF);
         offset = 1;
       } else {
         curPayLoad[0] = (byte) (i & 0xFF);
         offset = 0;
       }
-      curPayLoad[1 + offset] = (byte)serviceId;
+      curPayLoad[1 + offset] = (byte) serviceId;
       int bytePos = 2;
-      for(Byte funcByte : subFunctionBytes) {
+      for (Byte funcByte : subFunctionBytes) {
         curPayLoad[bytePos + offset] = funcByte;
         bytePos++;
       }
       // when payLoadLength == 4
-      if(i == 4 && (bytePos + offset) <=4 ) {
+      if (i == 4 && (bytePos + offset) <= 4) {
         // add 5ae29fc4
-        curPayLoad[bytePos + offset] = (byte)0x5a;
-        curPayLoad[bytePos + offset + 1] = (byte)0xe2;
-        curPayLoad[bytePos + offset + 2] = (byte)0x9f;
-        curPayLoad[bytePos + offset + 3] = (byte)0xc4;
+        curPayLoad[bytePos + offset] = (byte) 0x5a;
+        curPayLoad[bytePos + offset + 1] = (byte) 0xe2;
+        curPayLoad[bytePos + offset + 2] = (byte) 0x9f;
+        curPayLoad[bytePos + offset + 3] = (byte) 0xc4;
       } else {
         for (int j = bytePos + offset; j < 8; j++) {
           curPayLoad[j] = (byte) (rn.nextInt(256) & 0xFF);
@@ -202,7 +196,7 @@ abstract public class AbstractScenario {
 
       final byte[] byteFlowControlTraffic = new byte[]{0x30, 0, 0, 0, 0, 0, 0, 0};
       //flow control traffic
-      if(i >= 8){
+      if (i >= 8) {
         requests.add(Request.Builder.newBuilder()
             .id(requestId)
             .data(byteFlowControlTraffic)
@@ -217,7 +211,7 @@ abstract public class AbstractScenario {
 
   protected static List<Request> getRemainingPayload(int reqId, int payLoadSize, int rspWaitTime) {
     final List<Request> requests = new ArrayList<>();
-    if(payLoadSize <= 0) {
+    if (payLoadSize <= 0) {
       return requests;
     }
     int remainingSize = payLoadSize;
@@ -231,7 +225,7 @@ abstract public class AbstractScenario {
       }
       remainingSize = remainingSize - 7;
       index++;
-      if(index >= 0x30) {
+      if (index >= 0x30) {
         index = 0x20;
       }
       requests.add(Request.Builder.newBuilder()
@@ -239,17 +233,17 @@ abstract public class AbstractScenario {
           .data(curPayLoad)
           .waitTime(rspWaitTime)
           .build());
-    } while(remainingSize > 0);
+    } while (remainingSize > 0);
 
     return requests;
   }
 
   protected List<Request> prepareAndSendTrafficForSingleService(Integer requestId, CANResponseFilter filter,
-      int service_type,
-      List<Byte> subFunctionBytes,
-      int payLoadMinLength,
-      int payLoadMaxLength,
-      int rspWaitTime) {
+                                                                int service_type,
+                                                                List<Byte> subFunctionBytes,
+                                                                int payLoadMinLength,
+                                                                int payLoadMaxLength,
+                                                                int rspWaitTime) {
     return fuzzCurrentSubFunctionWithVaryPayLoadLength(requestId, service_type,
         subFunctionBytes, payLoadMinLength, payLoadMaxLength, rspWaitTime);
   }
@@ -264,31 +258,31 @@ abstract public class AbstractScenario {
         .build();
   }
 
-  public boolean isXcpRequestSendingSuccess(Collection<Request> requests,CANResponseFilter filter,
-      Integer requestId, Set<Integer> responseIds,
-      byte[] payload, boolean checkSendingOnly){
+  public boolean isXcpRequestSendingSuccess(Collection<Request> requests, CANResponseFilter filter,
+                                            Integer requestId, Set<Integer> responseIds,
+                                            byte[] payload, boolean checkSendingOnly) {
     boolean connectSuccess = false;
     long sendingTime = System.currentTimeMillis() / 1000;
-    while(!connectSuccess && (System.currentTimeMillis() / 1000 - sendingTime < REQUEST_TIMEOUT_INTERVAL)){
+    while (!connectSuccess && (System.currentTimeMillis() / 1000 - sendingTime < REQUEST_TIMEOUT_INTERVAL)) {
       requests.add(createRequest(requestId, payload));
       // send traffic
       final Iterator<Response> responses = cloud.sendCANFrames(requests, filter);
       // analyze logs
-      while (responses.hasNext()){
+      while (responses.hasNext()) {
         final Response response = responses.next();
         logRequestFrame(response.getRequest());
         final Iterator<CANFrame> frames = response.getResponses();
-        while(frames.hasNext()){
+        while (frames.hasNext()) {
           final CANFrame frame = frames.next();
-          if(responseIds.contains(frame.getId())){
-            if(checkSendingOnly){
+          if (responseIds.contains(frame.getId())) {
+            if (checkSendingOnly) {
               connectSuccess = true;
               break;
-            }else {
+            } else {
               byte[] data = frame.getData();
               // Check whether the XCP Service is implemented or not
-              if((data[0] & 0xFF) == 0xFF
-                  ||((data[0] & 0xFF) == 0xFE && (data[1] & 0xFF) != 0x20)){
+              if ((data[0] & 0xFF) == 0xFF
+                  || ((data[0] & 0xFF) == 0xFE && (data[1] & 0xFF) != 0x20)) {
                 connectSuccess = true;
                 break;
               }

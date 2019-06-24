@@ -6,13 +6,9 @@ import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestConst.DiagnosticSession;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @Slf4j
 public class ScanRoutineControlVulnerabilities extends AbstractScenario {
@@ -41,11 +37,11 @@ public class ScanRoutineControlVulnerabilities extends AbstractScenario {
     eraseMemoryAttempt(requestId, filter);
 
     List<Byte> subFunctionBytes = new ArrayList<>(8);
-    subFunctionBytes.add((byte)0x0);
-    subFunctionBytes.add((byte)0x0);
-    subFunctionBytes.add((byte)0x0);
-    subFunctionBytes.set(0,((byte)0x01));
-    for(DiagnosticSession session : sessionList){
+    subFunctionBytes.add((byte) 0x0);
+    subFunctionBytes.add((byte) 0x0);
+    subFunctionBytes.add((byte) 0x0);
+    subFunctionBytes.set(0, ((byte) 0x01));
+    for (DiagnosticSession session : sessionList) {
       sendTrafficForMultipleServices(requestId, filter, subFunctionBytes,
           DEFAULT_MIN_PAYLOAD_LENGTH, DEFAULT_MAX_PAYLOAD_LENGTH, session);
     }
@@ -81,13 +77,13 @@ public class ScanRoutineControlVulnerabilities extends AbstractScenario {
   }
 
   private void sendTrafficForMultipleServices(Integer requestId, CANResponseFilter filter,
-      List<Byte> subFunctionBytes, int payLoadMinLength, int payLoadMaxLength, DiagnosticSession session) {
+                                              List<Byte> subFunctionBytes, int payLoadMinLength, int payLoadMaxLength, DiagnosticSession session) {
     final Collection<Request> requests = new ArrayList<>();
     requests.add(this.enterSession(requestId, session));
     List<Request> entries = null;
     for (int j = 0; j < 256; j++) {
       subFunctionBytes.set(1, (byte) (j & 0xFF));
-      for(int k = 0; k < 2; k++) {
+      for (int k = 0; k < 2; k++) {
         subFunctionBytes.set(2, (byte) (k & 0xFF));
         entries = prepareAndSendTrafficForSingleService(requestId, filter, ROUTINE_CONTROL_SERVICE,
             subFunctionBytes, payLoadMinLength, payLoadMaxLength, getResponseWaitTime(testPoints));

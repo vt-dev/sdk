@@ -6,14 +6,9 @@ import com.visualthreat.api.data.CANResponseFilter;
 import com.visualthreat.api.data.Request;
 import com.visualthreat.api.data.Response;
 import com.visualthreat.api.tests.common.TestPoints;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 @Slf4j
 public class CANFuzz extends AbstractScenario {
@@ -52,7 +47,7 @@ public class CANFuzz extends AbstractScenario {
         //step 3
         numSentRequests += regular(requestId, responseWaitTime, filter);
       } catch (Exception e) {
-        if(e instanceof InterruptedException) {
+        if (e instanceof InterruptedException) {
           Thread.currentThread().interrupt();
           return;
         } else {
@@ -77,10 +72,10 @@ public class CANFuzz extends AbstractScenario {
         data[i] = (byte) randomInt(0, 255);
       }
       requests.add(Request.Builder.newBuilder()
-            .id(requestId)
-            .data(data)
-            .waitTime(delay)
-            .build());
+          .id(requestId)
+          .data(data)
+          .waitTime(delay)
+          .build());
     }
     final Iterator<Response> responses = cloud.sendCANFrames(requests, filter);
     // logs
@@ -163,11 +158,11 @@ public class CANFuzz extends AbstractScenario {
     return totalEntries;
   }
 
-  private void randomFuzzForAllPotentialECUs(int responseWaitTime, CANResponseFilter filter){
+  private void randomFuzzForAllPotentialECUs(int responseWaitTime, CANResponseFilter filter) {
     long startTime = System.currentTimeMillis();
     // Random fuzz for @RANDOM_FUZZ_RUNNING_TIME seconds
-    for(int id = 0x001; id < 0x7FF; id++){
-      if(System.currentTimeMillis() > startTime + 1000 * RANDOM_FUZZ_RUNNING_TIME){
+    for (int id = 0x001; id < 0x7FF; id++) {
+      if (System.currentTimeMillis() > startTime + 1000 * RANDOM_FUZZ_RUNNING_TIME) {
         break;
       }
       fixedLenWithTries(id, responseWaitTime, 16, filter);
