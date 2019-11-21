@@ -1,4 +1,3 @@
-# Safe to remove. Outdated.
 
 ## Visual Threat SDK
 
